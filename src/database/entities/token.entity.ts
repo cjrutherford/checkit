@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import UserEntity from "./user.entity";
 
 @Entity()
 export default class TokenEntity {
@@ -6,8 +7,8 @@ export default class TokenEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
-    userId: string;
+    @ManyToOne(() => UserEntity, user => user.tokens, { onDelete: 'CASCADE' })
+    user: UserEntity;
     
     @Column()
     token: string;
