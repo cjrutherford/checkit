@@ -1,13 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
 import { ApiProperty, ApiTags } from '@nestjs/swagger';
+import UserEntity from './user.entity';
 
 @Entity()
 export default class UserProfileEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
-    userId: string; // Reference to the UserEntity
+    @OneToOne(() => UserEntity, user => user.profile )
+    user: UserEntity; // Reference to the UserEntity
 
     @Column({ nullable: true })
     name?: string;

@@ -31,7 +31,7 @@ export class UsersService {
 
     async createUserProfile(userId: string, profileData: Partial<UserProfileEntity>): Promise<UserProfileEntity> { 
         const existingProfile = await this.userProfileRepo.findOne({
-            where: { userId },
+            where: { user: {id: userId} },
         });
         if (existingProfile) {
             throw new Error(`User profile already exists for user ID: ${userId}`);
@@ -45,14 +45,14 @@ export class UsersService {
         const newProfile = this.userProfileRepo.create({
             ...profileData,
             profilePictureUrl,
-            userId,
+            user: {id: userId}, 
         });
         return await this.userProfileRepo.save(newProfile);
     }
 
     async updateUserProfile(userId: string, profileData: Partial<UserProfileEntity>): Promise<UserProfileEntity> {
         const existingProfile = await this.userProfileRepo.findOne({
-            where: { userId },
+            where: { user: { id: userId } },
         });
         if (!existingProfile) {
             throw new Error(`User profile not found for user ID: ${userId}`);
@@ -72,7 +72,7 @@ export class UsersService {
 
     async deleteUserProfile(userId: string): Promise<void> {
         const existingProfile = await this.userProfileRepo.findOne({
-            where: { userId },
+            where: { user: { id: userId }},
         });
         if (!existingProfile) {
             throw new Error(`User profile not found for user ID: ${userId}`);

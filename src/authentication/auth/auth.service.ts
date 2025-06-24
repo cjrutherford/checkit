@@ -42,7 +42,7 @@ export class AuthService {
         const token = jwt.sign(payload, secret, { expiresIn: '6h' });
 
         // Store the token in the database
-        const tokenEntity = this.tokenRepo.create({ userId: user.id, token });
+        const tokenEntity = this.tokenRepo.create({ user: {id: user.id }, token });
         await this.tokenRepo.save(tokenEntity);
 
         return token;
@@ -104,12 +104,12 @@ export class AuthService {
 
     async logout(token: string): Promise<string> {
         // Implement your logout logic here, such as invalidating the token
-        const tokenEntity = await this.tokenRepo.findOne({ where: { token } });
+        const tokenEntity = await this.tokenRepo.findOne({ where: { token }, relations: ['user']  });
         if (!tokenEntity) {
             throw new Error('Invalid token');
         }
-        const userId = tokenEntity.userId;
-        const allTokens = await this.tokenRepo.find({ where: { userId } });
+        const userId = tokenEntity.user.id;
+        const allTokens = await this.tokenRepo.find({ where: { user: { id: userId } }});
         // Mark all tokens for the user as revoked
         for (const t of allTokens) {
             t.isRevoked = true;

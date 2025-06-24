@@ -21,6 +21,7 @@ export class DatabaseModule implements DynamicModule {
         provide: connectionName,
         useFactory: async (config: ConfigService) => {
           const connectionOptions = factory(config);
+          console.log('Connection options for', name, ':', connectionOptions);
           const ds = new DataSource(connectionOptions);
           await ds.initialize();
 

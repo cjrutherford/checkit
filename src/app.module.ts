@@ -5,16 +5,16 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { AssetModule } from './asset/asset.module';
+import { InternalConfigModule } from './internal-config/internal-config.module';
+import ChecklistModule from './checklist/checklist.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '.env',
-    }),
     AuthenticationModule, 
     UsersModule, 
-    AssetModule
+    AssetModule,
+    ChecklistModule,
+    InternalConfigModule,
   ],
   controllers: [AppController],
   providers: [AppService],

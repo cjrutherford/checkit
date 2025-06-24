@@ -1,5 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
+// TODO: This entity is a placeholder for storing salts for password hashing.
+// this should be handled by some other form of persistence.
 @Entity()
 export default class SaltEntity {
     // This entity can be used to store salts for password hashing
@@ -9,6 +11,7 @@ export default class SaltEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
     
+    // this is an explicit manual connection. 
     @Column()
     userId: string;
     
