@@ -1,0 +1,40 @@
+.template-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2rem;
+    border: 2px solid var(--highlight);
+    border-radius: 8px;
+    background-color: var(--background);
+    color: var(--text);
+    box-shadow: 0px 2px 6px var(--accent);
+
+    .actions {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 1rem;
+
+    button {
+        width: 100%;
+        max-width: 200px;
+        margin-top: 1rem;
+        background-color: var(--primary);
+        color: var(--text);
+        border: none;
+        border-radius: 5px;
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: var(--secondary);
+        }
+    }
+    }
+}

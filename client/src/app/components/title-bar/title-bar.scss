@@ -1,0 +1,31 @@
+.title-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background-color: var(--background);
+  color: var(--text);
+  border-radius: 10px;
+  border: 1px solid var(--highlight); /* Added border */
+  box-shadow: 0px 2px 4px var(--accent); /* Added box shadow */
+}
+
+.routing {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    gap: 2rem;
+}
+.routing-link.active {
+    color: var(--accent);
+    background-color: var(--highlight);
+    border-radius: 10px;
+    border: 2px solid var(--accent);
+    box-shadow: 0px 2px 4px var(--accent);
+    padding: 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+a {
+    text-decoration: none;
+    color: var(--text);
+}

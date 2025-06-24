@@ -1,0 +1,13 @@
+<div class="template-block">
+    <div class="title">
+        <h2>{{template.name}}</h2>
+    </div>
+    <div class="description">
+        <p>{{template.description}}</p>
+    </div>
+    <div class="actions">
+        <button class="edit-button" (click)="editTemplate(template)">✏️ Edit</button>
+        <button class="delete-button" (click)="deleteTemplate(template)">🗑️ Delete</button>
+        <button class="use-button" (click)="useTemplate(template)">✅ Use Template</button>
+    </div>
+</div>

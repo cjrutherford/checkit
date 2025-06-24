@@ -1,0 +1,31 @@
+<div class="card-container">
+  <div class="title">
+    <h1>Active Checklist Runs</h1>
+    <p>View and manage your active checklist runs.</p>
+  </div>
+  <div class="content">
+    <p>
+      Active checklist runs are those that are currently in progress or have not
+      been completed yet. You can view details, edit, or delete these runs as
+      needed.
+    </p>
+    <p>
+      To create a new checklist run, navigate to the
+      <a href="/templates">Checklists</a> page and select a checklist to start a
+      new run.
+    </p>
+  </div>
+  <button (click)="createRun()">➕ Create Run</button>
+</div>
+
+@if (runs.length === 0) {
+<p class="card-container">No active runs found.</p>
+}
+<div *ngIf="runs.length > 0" class="grid-list">
+  @for (run of runs; track $index) {
+  <app-run-block [run]="run" (view)="selectViewRun($event)"></app-run-block>
+  }
+</div>
+
+<app-create-run class="modal" (close)="closeModals()" *ngIf="showCreateRun"></app-create-run>
+<app-view-run class="modal"(close)="closeModals()" [run]="selectedRun" *ngIf="showViewRun"></app-view-run>

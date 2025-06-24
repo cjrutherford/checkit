@@ -1,0 +1,21 @@
+<div class="content-card">
+    <div class="title">
+        <h2>{{run.name}}</h2>
+        <p>{{run.description}}</p>
+    </div>
+    <div class="stats">
+        <div class="next-task">
+            Next Task: {{nextTask}}
+        </div>
+        <div class="progression">
+            <div class="progress-bar-outer">
+                <div class="progress-bar-inner pulsing"
+                    [ngStyle]="{'width': completion + '%'}"
+                ></div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <button class="btn btn-primary" (click)="viewRun()">View</button>
+    </div>
+</div>
