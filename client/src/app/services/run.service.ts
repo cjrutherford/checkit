@@ -1,4 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs';
+import { CheckListTemplateDto, RunDto } from '../types';
 
 import { Injectable } from '@angular/core';
 import { Template } from './template.service';
@@ -20,23 +21,26 @@ export interface RunState {
   providedIn: 'root'
 })
 export class RunService {
-  private runsSubject = new BehaviorSubject<Run[]>([]);
+  private runsSubject = new BehaviorSubject<RunDto[]>([]);
 
-  getRuns(): Observable<Run[]> {
+  getRuns(): Observable<RunDto[]> {
     return this.runsSubject.asObservable();
   }
 
-  addRunFromTemplate(template: Template): void {
-    const run: Run = {
+  addRunFromTemplate(template: CheckListTemplateDto): void {
+    const run: RunDto = {
       ...template,
-      name: template.name + ` - Run ${new Date().toLocaleDateString()}`,
-      state: template.tasks.map(task => ({ task, completed: false }))
+      title: template.title + ` - Run ${new Date().toLocaleDateString()}`,
+      status: 'pending',
+      checklistTemplate: new CheckListTemplateDto,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     const currentRuns = this.runsSubject.value;
     this.runsSubject.next([...currentRuns, run]);
   }
 
-  updateRun(index: number, run: Run): void {
+  updateRun(index: number, run: RunDto): void {
     const currentRuns = [...this.runsSubject.value];
     currentRuns[index] = run;
     this.runsSubject.next(currentRuns);

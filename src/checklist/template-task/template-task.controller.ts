@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { TemplateTaskService } from './template-task.service';
 import CreateTemplateTaskDto from '../dto/create-template-task.dto';
-import { TemplateTask } from '../../database/entities';
+import { TemplateTask, UserEntity } from '../../database/entities';
 import { AuthGuard } from '../../authentication/auth/auth.guard';
+import User from '../../authentication/user.decorator';
 
 @UseGuards(AuthGuard)
 @Controller('template-task')
@@ -10,7 +11,7 @@ export class TemplateTaskController {
     constructor(private readonly templateTaskService: TemplateTaskService) {}
     
     @Post()
-    async createTempateTask(@Body() createTask: CreateTemplateTaskDto): Promise<TemplateTask> {
+    async createTempateTask(@User() user: UserEntity, @Body() createTask: CreateTemplateTaskDto): Promise<TemplateTask> {
         return await this.templateTaskService.create(createTask);
     }
 

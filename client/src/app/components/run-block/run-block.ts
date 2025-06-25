@@ -1,8 +1,9 @@
+import { CheckListTemplateDto, RunDto } from '../../types';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-import { Run } from '../../services/run.service'; // Adjust the import path as necessary
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
+import { Run } from '../../services/run.service'; // Adjust the import path as necessary
 
 @Component({
   selector: 'app-run-block',
@@ -11,24 +12,28 @@ import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
   styleUrl: './run-block.scss'
 })
 export class RunBlock {
-  @Input() run: Run = {
-    name: '',
+  @Input() run: RunDto = {
+    title: '',
     description: '',
     tasks: [],
-    order: false,
-    state: []
+    id: '',
+    user: undefined,
+    checklistTemplate: {} as CheckListTemplateDto,
+    status: 'completed',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   }; // Replace 'any' with the appropriate type for your run object
 
-  @Output() view: EventEmitter<Run> = new EventEmitter<Run>();
+  @Output() view: EventEmitter<RunDto> = new EventEmitter<RunDto>();
   
   get completion(): number {
-    return this.run.state.map(s => s.completed)
-    .filter(c => c).length / this.run.state.length * 100;
+    return this.run.tasks.map(s => s.completedAt)
+    .filter(c => c).length / this.run.tasks.length * 100;
   }
 
   get nextTask(): string {
-    const next = this.run.state.find(s => !s.completed);
-    return next ? next.task : 'All tasks completed';
+    const next = this.run.tasks.find(s => !s.completedAt);
+    return next ? next.description! : 'All tasks completed';
   }
 
   viewRun(): void {

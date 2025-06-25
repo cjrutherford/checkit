@@ -1,6 +1,8 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+
+import { CheckListTemplateDto } from '../../types';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-template-edit',
@@ -9,14 +11,22 @@ import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } f
   styleUrl: './template-edit.scss'
 })
 export class TemplateEdit implements OnChanges {
-  @Input() template: any = null;
+  @Input() template: CheckListTemplateDto = {
+    id: '',
+    title: '',
+    description: '',
+    tasks: [],
+    order: false,
+    user: '',
+    checklistRuns: []
+  };
   @Output() save = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
   templateForm: FormGroup;
 
   constructor(private readonly fb: FormBuilder) {
     this.templateForm = this.fb.group({
-      name: '',
+      title: '',
       description: '',
       tasks: this.fb.array([this.fb.control('')]),
       order: false
@@ -31,7 +41,7 @@ export class TemplateEdit implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['template'] && this.template) {
       this.templateForm.patchValue({
-        name: this.template.name || '',
+        title: this.template.title || '',
         description: this.template.description || '',
         order: this.template.order || false
       });

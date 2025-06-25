@@ -1,6 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { Template, TemplateService } from '../../services/template.service';
+import { Subject, takeUntil } from 'rxjs';
 
+import { CheckListTemplateDto } from '../../types';
+import { ChecklistTemplateService } from '../../services';
 import { RunService } from '../../services/run.service';
 
 @Component({
@@ -10,19 +12,27 @@ import { RunService } from '../../services/run.service';
   styleUrl: './create-run.scss'
 })
 export class CreateRun implements OnInit {
-  templates: Template[] = [];
+  templates: CheckListTemplateDto[] = [];
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
+  destroy$: Subject<void> = new Subject<void>();
 
   constructor(
-    private readonly templateService: TemplateService, 
+    private readonly templateService: ChecklistTemplateService, 
     private readonly runService: RunService
   ) {}
 
   ngOnInit(): void {
-    this.templates = this.templateService.getTemplates();
+    this.templateService.getTemplates().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (templates: CheckListTemplateDto[]) => {
+        this.templates = templates;
+        },
+        error: (error: any) => {
+          console.error('Error loading templates:', error);
+        },
+      });
   }
 
-  selectTemplate(template: Template): void {
+  selectTemplate(template: CheckListTemplateDto): void {
     // Logic to handle template selection for creating a run
     console.log('Selected Template:', template);
     this.runService.addRunFromTemplate(template);

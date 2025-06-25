@@ -2,8 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { ChecklistTemplateService } from './checklist-template.service';
 import { CreateChecklistTemplateDto } from '../dto/create-checklist-template.dto';
 import { UpdateChecklistTemplateDto } from '../dto/update-checklist-template.dto';
-import User from '../../authentication/user.decorator';
-import { UserEntity } from '../../database/entities';
+import User, { UserType } from '../../authentication/user.decorator';
 import { AuthGuard } from '../../authentication/auth/auth.guard';
 
 @UseGuards(AuthGuard)
@@ -12,13 +11,15 @@ export class ChecklistTemplateController {
   constructor(private readonly checklistTemplateService: ChecklistTemplateService) {}
 
   @Post()
-  create(@Body() createChecklistTemplateDto: CreateChecklistTemplateDto) {
-    return this.checklistTemplateService.create(createChecklistTemplateDto);
+  create(@User() user: UserType, @Body() createChecklistTemplateDto: CreateChecklistTemplateDto) {
+    console.log("🚀 ~ ChecklistTemplateController ~ create ~ createChecklistTemplateDto:", createChecklistTemplateDto)
+    return this.checklistTemplateService.create(createChecklistTemplateDto, user.userId);
   }
 
   @Get()
-  findAll(@User() user: UserEntity) {
-    return this.checklistTemplateService.findAll(user.id);
+  findAll(@User() user: UserType) {
+    console.log("🚀 ~ ChecklistTemplateController ~ findAll ~ user:", user)
+    return this.checklistTemplateService.findAll(user.userId);
   }
 
   @Get(':id')

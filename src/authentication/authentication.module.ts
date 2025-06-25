@@ -1,12 +1,8 @@
-import { Module } from '@nestjs/common';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { DatabaseModule } from '../database/database.module';
-import { UserEntity, SaltEntity, TokenEntity } from '../database/entities';
-import { DataSource } from 'typeorm';
+import { AuthGuard } from './auth/auth.guard';
 import { AuthService } from './auth/auth.service';
-import { ConfigModule } from '@nestjs/config';
 import { AuthenticationController } from './authentication.controller';
 import { InternalConfigModule } from 'src/internal-config/internal-config.module';
+import { Module } from '@nestjs/common';
 
 @Module({
     imports: [
@@ -14,7 +10,11 @@ import { InternalConfigModule } from 'src/internal-config/internal-config.module
     ],
     controllers: [AuthenticationController],
     providers: [ 
-        AuthService,  
+        AuthService,
+        AuthGuard
     ],
+    exports: [
+        AuthGuard
+    ]
 })
 export class AuthenticationModule {}

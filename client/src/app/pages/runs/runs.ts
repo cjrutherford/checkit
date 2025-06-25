@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { CreateRun } from '../../components/create-run/create-run';
 import { RunBlock } from '../../components/run-block/run-block';
+import { RunDto } from '../../types';
 import { ViewRun } from '../../components/view-run/view-run';
 
 @Component({
@@ -14,7 +15,7 @@ import { ViewRun } from '../../components/view-run/view-run';
   styleUrl: './runs.scss'
 })
 export class Runs {
-  runs: Run[] = [];
+  runs: RunDto[] = [];
   showCreateRun = false;
   showViewRun = false;
   selectedRun?: any;
@@ -25,7 +26,7 @@ export class Runs {
   ngOnInit() {
     this.runService.getRuns()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((runs: Run[]) => {
+      .subscribe((runs: RunDto[]) => {
         this.runs = runs
         console.log('Runs loaded:', this.runs);
       });

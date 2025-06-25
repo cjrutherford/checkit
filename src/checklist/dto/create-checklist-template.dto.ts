@@ -1,5 +1,5 @@
-import { IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateChecklistTemplateDto {
     @ApiProperty({ description: 'Title of the checklist template' })
@@ -10,4 +10,8 @@ export class CreateChecklistTemplateDto {
     @IsOptional()
     @IsString()
     description?: string;
+
+    @ApiProperty({ description: 'Order of the checklist template' })
+    order: boolean;
+
 }

@@ -1,4 +1,5 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+
 import ChecklistTemplate from "./checklist-template.entity";
 import RunTask from "./run-task.entity";
 
@@ -16,6 +17,9 @@ export default class ChecklistRun {
 
     @Column()
     title: string;
+
+    @Column({ type: 'text', nullable: true })
+    description?: string;
 
     @Column({ type: 'enum', enum: ChecklistRunStatus, default: ChecklistRunStatus.PENDING })
     status: ChecklistRunStatus;

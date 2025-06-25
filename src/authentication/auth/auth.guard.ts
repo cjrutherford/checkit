@@ -27,6 +27,7 @@ export class AuthGuard implements CanActivate {
     if (!tokenEntity) {
       return false;
     }
+    request.user = tokenEntity.user; // Attach user to request
     return true;
   }
 }

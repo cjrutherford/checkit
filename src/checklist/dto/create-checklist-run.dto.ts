@@ -1,11 +1,16 @@
-import { IsOptional, IsString } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsOptional, IsString } from "class-validator";
 
 export default class CreateChecklistRunDto {
 
     @ApiProperty({ description: "Title of the checklist run" })
     @IsString()
     title: string;
+
+    @ApiPropertyOptional({ description: "Optional description of the checklist run" })
+    @IsOptional()
+    @IsString()
+    description?: string;
 
     @ApiProperty({ description: "ID of the checklist template" })
     @IsString()

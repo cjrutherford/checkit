@@ -28,7 +28,7 @@ export declare type ThemeType = {
     '[style.--accent]': 'accent',
     '[style.--text]': 'text',
     '[style.--highlight]': 'highlight',
-  }
+  },
 })
 export class App {
   themes: ThemeType[] = [

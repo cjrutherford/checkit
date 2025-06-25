@@ -1,4 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+
+import { CheckListTemplateDto } from '../../types';
 
 @Component({
   selector: 'app-template-block',
@@ -7,7 +9,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrl: './template-block.scss'
 })
 export class TemplateBlock {
-  @Input() template: { name: string; description: string, tasks: string[], order: boolean } = { name: '', description: '', tasks: [], order: false };
+  @Input() template: CheckListTemplateDto = {
+    id: '', title: '', description: '', tasks: [], order: false,
+    user: undefined,
+    checklistRuns: []
+  };
   @Output() onEdit = new EventEmitter<void>();
   @Output() onDelete = new EventEmitter<void>();
 

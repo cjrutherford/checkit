@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Subscription } from 'rxjs';
 
-import { Run } from '../../services/run.service';
-import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { CommonModule } from '@angular/common';
+import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
+import { Run } from '../../services/run.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-view-run',
@@ -46,8 +46,10 @@ export class ViewRun implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.formChangesSub = this.taskForm.valueChanges.subscribe(() => {
       this.updateRunStateFromForm();
+      this.syncFormWithState();
       this.updateStepAndDisable();
     });
+    this.syncFormWithState();
     this.updateStepAndDisable();
   }
 
@@ -55,11 +57,27 @@ export class ViewRun implements OnInit, OnDestroy {
     this.formChangesSub?.unsubscribe();
   }
 
-  get completion(): number {
-    const total = this.run.state.length;
-    if (!total) return 0;
-    const completed = this.run.state.filter(s => !!s.completed).length;
-    return Math.round((completed / total) * 100);
+  private updateRunStateFromForm(): void {
+    // Always update run.state from the form, and ensure boolean values
+    const values = this.taskList.value;
+    values.forEach((completed: any, i: number) => {
+      if (this.run.state[i]) {
+        this.run.state[i].completed = !!completed;
+      }
+    });
+  }
+
+  /**
+   * Ensure the form controls always reflect the current state array.
+   * This prevents desync between the checkboxes and the state.
+   */
+  private syncFormWithState(): void {
+    this.taskList.controls.forEach((ctrl, i) => {
+      const shouldBe = !!this.run.state[i]?.completed;
+      if (ctrl.value !== shouldBe) {
+        ctrl.setValue(shouldBe, { emitEvent: false });
+      }
+    });
   }
 
   get taskList(): FormArray {
@@ -67,64 +85,28 @@ export class ViewRun implements OnInit, OnDestroy {
   }
 
   private initialiseTasks(): void {
-    if (!this.run || !this.run.state) return;
+    if (!this.run?.state) return;
     this.taskList.clear();
     this.run.state.forEach((task) => {
       this.taskList.push(this.fb.control(!!task.completed));
     });
-    this.updateStepAndDisable();
+    // No need to updateStepAndDisable
   }
 
-  private updateRunStateFromForm(): void {
-    const values = this.taskList.value;
-    values.forEach((completed: boolean, i: number) => {
-      if (this.run.state[i]) {
-        this.run.state[i].completed = completed;
-      }
-    });
-
-    if (this.run.order) {
-      // Find the first unchecked step
-      let firstUnchecked = values.findIndex((v: boolean) => !v);
-      if (firstUnchecked === -1) firstUnchecked = values.length;
-
-      // If a checked step before the first unchecked is unchecked, uncheck it and all after it
-      this.taskList.controls.forEach((ctrl, i) => {
-        if (i >= firstUnchecked && ctrl.value) {
-          ctrl.setValue(false, { emitEvent: false });
-          this.run.state[i].completed = false;
-        }
-      });
-    }
-  }
-
-  /**
-   * Determines the current step for ordered runs and disables/enables controls accordingly.
-   * Only the current step can be checked, and only the previous step can be unchecked.
-   */
   private updateStepAndDisable(): void {
-    if (!this.run.order) {
-      this.taskList.controls.forEach(ctrl => ctrl.enable({ emitEvent: false }));
-      return;
-    }
+    // No-op: disabling/enabling toggles is removed
+  }
 
-    // Find the first incomplete step (current step)
-    let current = 0;
-    for (; current < this.run.state.length; current++) {
-      if (!this.run.state[current].completed) break;
-    }
-    this._currentStep = current;
+  private processControlStates(): void {
+    // No-op: disabling/enabling toggles is removed
+  }
 
-    // Only enable the current step (for checking) and previous step (for unchecking)
-    this.taskList.controls.forEach((ctrl, i) => {
-      if (i === current) {
-        ctrl.enable({ emitEvent: false });
-      } else if (i === current - 1 && this.run.state[i].completed) {
-        ctrl.enable({ emitEvent: false });
-      } else {
-        ctrl.disable({ emitEvent: false });
-      }
-    });
+  get completion(): number {
+    // Calculate completion based on the actual checkbox values for full sync
+    const total = this.taskList.length;
+    if (!total) return 0;
+    const checked = this.taskList.controls.filter(ctrl => ctrl.value).length;
+    return Math.round((checked / total) * 100);
   }
 
   onClose(): void {
