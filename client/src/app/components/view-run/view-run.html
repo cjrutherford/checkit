@@ -1,7 +1,23 @@
 <div class="content-card">
-    <div class="title">{{run.name}}</div>
+    <div class="actions">
+        <div class="spacer"></div>
+    </div>
+    <button class="close-btn" (click)="onClose()">X</button>
+    <div class="title">
+        <h2>{{run.name}}</h2>
+        <app-progress-bar [completion]="completion"></app-progress-bar>
+    </div>
     <div class="subtitle">
-        <span class="label label-default">{{run.tasks}}</span>
-        <span class="label label-info">{{run.state}}</span>
+        <form [formGroup]="taskForm" class="task-form">
+            <div formArrayName="tasks">
+                <div *ngFor="let control of taskList.controls; let i = index" class="task-row">
+                    <label for="task-{{i}}" class="task-label">{{ run.tasks[i] }}</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" [formControlName]="i" id="task-{{i}}">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </form>
     </div>
 </div>

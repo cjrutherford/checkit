@@ -8,11 +8,7 @@
             Next Task: {{nextTask}}
         </div>
         <div class="progression">
-            <div class="progress-bar-outer">
-                <div class="progress-bar-inner pulsing"
-                    [ngStyle]="{'width': completion + '%'}"
-                ></div>
-            </div>
+            <app-progress-bar [completion]="completion"></app-progress-bar>
         </div>
     </div>
     <div class="actions">

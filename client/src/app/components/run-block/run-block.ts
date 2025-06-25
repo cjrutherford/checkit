@@ -2,10 +2,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { Run } from '../../services/run.service'; // Adjust the import path as necessary
+import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 
 @Component({
   selector: 'app-run-block',
-  imports: [CommonModule],
+  imports: [CommonModule, ProgressBarComponent],
   templateUrl: './run-block.html',
   styleUrl: './run-block.scss'
 })
