@@ -1,11 +1,10 @@
-import { Run, RunService } from '../../services/run.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, effect, signal } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-import { Component, effect, signal } from '@angular/core';
 import { CreateRun } from '../../components/create-run/create-run';
 import { RunBlock } from '../../components/run-block/run-block';
 import { RunDto } from '../../types';
+import { RunService } from '../../services/run.service';
 import { ViewRun } from '../../components/view-run/view-run';
 
 @Component({
@@ -39,8 +38,13 @@ export class Runs {
     this.viewrun();
   }
 
+  addCreatedRun(run: RunDto) {
+    const newRuns = [...this.runs(), run];
+    this.runs.set(newRuns); // Add the new run to the local state
+    this.closeModals();
+  }
+
   closeModals() {
-    console.log('Closing modals');
     this.showCreateRun = false;
     this.showViewRun = false;
   }
@@ -50,9 +54,19 @@ export class Runs {
     console.log(`Editing run with ID: ${id}`);
   }
 
-  deleteRun(id: string) {
+  deleteRun(run: RunDto, index: number) {
     // Logic to delete a run by its ID
-    console.log(`Deleting run with ID: ${id}`);
+    this.runService.deleteRun(run).subscribe({
+      next: () => {
+        const currentRuns = this.runs();
+        // Remove the run from the local state
+        const newRuns = currentRuns.filter(r => r.id !== run.id);
+        this.runs.set(newRuns);
+      },
+      error: (error: any) => {
+        console.error(`Error deleting run with ID: ${index}`, error);
+      }
+    });
   }
 }
 

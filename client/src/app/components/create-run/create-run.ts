@@ -1,7 +1,6 @@
-import { Component, effect, EventEmitter, OnInit, Output, signal } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { CheckListTemplateDto, RunDto } from '../../types';
+import { Component, EventEmitter, Output, effect, signal } from '@angular/core';
 
-import { CheckListTemplateDto } from '../../types';
 import { ChecklistTemplateService } from '../../services';
 import { RunService } from '../../services/run.service';
 
@@ -11,9 +10,10 @@ import { RunService } from '../../services/run.service';
   templateUrl: './create-run.html',
   styleUrl: './create-run.scss'
 })
-export class CreateRun implements OnInit {
+export class CreateRun {
   templates = signal<CheckListTemplateDto[]>([]);
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
+  @Output() runCreated: EventEmitter<RunDto> = new EventEmitter<RunDto>();
 
   constructor(
     private readonly templateService: ChecklistTemplateService, 
@@ -23,10 +23,8 @@ export class CreateRun implements OnInit {
       this.templateService.getTemplates()
       .subscribe({
         next: (templates: CheckListTemplateDto[]) => {
-          this.templates.set(templates.map(t => {
-            t.tasks = t.tasks.map(task => task.description)
-            return t;
-          }));
+          const newTemplates = templates.map(this.loadTemplateMapper);
+          this.templates.set(newTemplates);
           },
           error: (error: any) => {
             console.error('Error loading templates:', error);
@@ -35,19 +33,45 @@ export class CreateRun implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  private loadTemplateMapper(template: CheckListTemplateDto) {
+    // This function can be used to map templates if needed
+    const dto: CheckListTemplateDto = {
+      title: template.title,
+      description: template.description,
+      tasks: template.tasks.map(this.loadTaskMapper),
+      id: template.id || '',
+      user: undefined,
+      order: false,
+      checklistRuns: []
+    };
+    return dto;
   }
+
+  private loadTaskMapper(task: any) {
+    // This function can be used to map tasks if needed
+    return {
+      description: task.description,
+      completed: task.completed ?? false,
+      id: task.id ?? '',
+    };
+  }
+
 
   selectTemplate(template: CheckListTemplateDto): void {
     // Logic to handle template selection for creating a run
-    console.log('Selected Template:', template);
-    this.runService.addRunFromTemplate(template);
-    this.close.emit();
+    this.runService.addRunFromTemplate(template).subscribe({
+      next: (run) => {
+        this.runCreated.emit(run);
+        this.close.emit();
+      },
+      error: (error) => {
+        this.close.emit();
+      }
+    });
   }
 
   onClose(): void{
     // Logic to close the create run modal or component
-    console.log('Create Run Modal Closed');
     this.close.emit();
   }
 }

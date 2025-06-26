@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
-  private baseUrl = '/api/users';
-  constructor(private http: HttpClient) {}
+  private readonly baseUrl = '/api/users';
+  constructor(private readonly http: HttpClient) {}
 
   getUsers(): Observable<any> {
     return this.http.get(this.baseUrl);

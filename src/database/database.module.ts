@@ -1,7 +1,7 @@
-
-import { DynamicModule, Module, Provider, Type } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { DynamicModule, Module, Provider, Type } from '@nestjs/common';
+
+import { ConfigService } from '@nestjs/config';
 
 @Module({})
 export class DatabaseModule implements DynamicModule {
@@ -21,7 +21,6 @@ export class DatabaseModule implements DynamicModule {
         provide: connectionName,
         useFactory: async (config: ConfigService) => {
           const connectionOptions = factory(config);
-          console.log('Connection options for', name, ':', connectionOptions);
           const ds = new DataSource(connectionOptions);
           await ds.initialize();
 

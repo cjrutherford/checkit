@@ -3,7 +3,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
-import { Run } from '../../services/run.service'; // Adjust the import path as necessary
 
 @Component({
   selector: 'app-run-block',
@@ -25,19 +24,30 @@ export class RunBlock {
   }; // Replace 'any' with the appropriate type for your run object
 
   @Output() view: EventEmitter<RunDto> = new EventEmitter<RunDto>();
+  @Output() delete: EventEmitter<RunDto> = new EventEmitter<RunDto>();
   
   get completion(): number {
-    return this.run.tasks.map(s => s.completedAt)
+    if (!this.run.tasks?.length) {
+      return 0; // No tasks, no completion
+    }
+    return this.run.tasks.map(s => s.completed).filter(x => x)
     .filter(c => c).length / this.run.tasks.length * 100;
   }
 
   get nextTask(): string {
-    const next = this.run.tasks.find(s => !s.completedAt);
+    if (!this.run.tasks?.length) {
+      return 'No tasks available';
+    }
+    const next = this.run.tasks.find(s => !s.completed);
     return next ? next.description! : 'All tasks completed';
   }
 
   viewRun(): void {
     this.view.emit(this.run);
+  }
+
+  deleteRun(): void {
+    this.delete.emit(this.run);
   }
 
 }

@@ -1,13 +1,14 @@
+import { Injectable, signal } from '@angular/core';
+
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { signal } from '@angular/core';
+import { UserType } from './../../../../src/authentication/user.decorator';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private baseUrl = '/api/auth';
-  constructor(private http: HttpClient) {}
-  token = signal<string | null>(localStorage.getItem('authToken') || null);
+  private readonly baseUrl = '/api/auth';
+  constructor(private readonly http: HttpClient) {}
+  token = signal<string | null>(localStorage.getItem('authToken') ?? null);
   user = signal<any>(null);
   isLoggedIn(): boolean {
     // Check the signal first, then fallback to localStorage
@@ -37,7 +38,7 @@ export class AuthService {
     return this.user();
   }
 
-  get tokenPayload(): any | null {
+  get tokenPayload(): UserType | null {
     const token = this.getAuthToken();
     if (!token) return null;
     const parts = token.split('.');

@@ -4,15 +4,15 @@
     </div>
     <button class="close-btn" (click)="onClose()">X</button>
     <div class="title">
-        <h2>{{run.name}}</h2>
+        <h2>{{run.title}}</h2>
         <app-progress-bar [completion]="completion"></app-progress-bar>
     </div>
     <div class="subtitle">
         <form [formGroup]="taskForm" class="task-form">
             <div formArrayName="tasks">
                 <div *ngFor="let control of taskList.controls; let i = index" class="task-row">
-                    <label for="task-{{i}}" class="task-label">{{ run.tasks[i] }}</label>
-                    <label class="toggle-switch">
+                    <label for="task-{{i}}" class="task-label">{{ run.tasks[i].description }}</label>
+                    <label class="toggle-switch" for="task-{{i}}">
                         <input type="checkbox" [formControlName]="i" id="task-{{i}}">
                         <span class="slider"></span>
                     </label>

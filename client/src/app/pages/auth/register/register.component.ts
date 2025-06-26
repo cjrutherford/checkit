@@ -16,7 +16,7 @@ export class RegisterComponent {
   error: string = '';
   success: string = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private readonly auth: AuthService, private readonly router: Router) {}
 
   register() {
     if (this.registerData.password !== this.registerData.confirmPassword) {

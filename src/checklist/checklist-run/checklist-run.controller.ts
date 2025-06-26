@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ChecklistRunService } from './checklist-run.service';
-import User from '../../authentication/user.decorator';
-import { UserEntity } from '../../database/entities';
+import User, { UserType } from '../../authentication/user.decorator';
 import CreateChecklistRunDto from '../dto/create-checklist-run.dto';
 import UpdateChecklistRunDto from '../dto/update-checklist-run.dto';
 import { AuthGuard } from '../../authentication/auth/auth.guard';
@@ -12,13 +11,14 @@ export class ChecklistRunController {
     constructor(private readonly checklistRunService: ChecklistRunService) {}
 
     @Post()
-    async createChecklistRun(@Body() createChecklistRunDto: CreateChecklistRunDto) {
-        return this.checklistRunService.create(createChecklistRunDto);
+    async createChecklistRun(@User() user: UserType, @Body() createChecklistRunDto: CreateChecklistRunDto) {
+        const newCheckList = await this.checklistRunService.create({...createChecklistRunDto, checklistTemplateId: createChecklistRunDto.checklistTemplateId}, user.userId);
+        return newCheckList;
     }
 
     @Get()
-    async getAllChecklistRuns(@User() user: UserEntity) {
-        return this.checklistRunService.findAll(user.id);
+    async getAllChecklistRuns(@User() user: UserType) {
+        return this.checklistRunService.findAll(user.userId);
     }
 
     @Get(':id')

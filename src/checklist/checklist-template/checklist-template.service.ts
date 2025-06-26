@@ -13,7 +13,6 @@ export class ChecklistTemplateService {
   ) { }
 
   async create(createChecklistTemplateDto: CreateChecklistTemplateDto, userId: string) {
-    console.log('inserting into the database', createChecklistTemplateDto);
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) {
       throw new Error(`User with id ${userId} not found`);
@@ -22,7 +21,6 @@ export class ChecklistTemplateService {
       ...createChecklistTemplateDto, 
       user,
     });
-    console.log('entity created: checklistTemplate', checklistTemplate);
     return await this.checklistTemplateRepo.save(checklistTemplate);
   }
 

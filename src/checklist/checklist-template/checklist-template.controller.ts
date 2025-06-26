@@ -12,13 +12,11 @@ export class ChecklistTemplateController {
 
   @Post()
   create(@User() user: UserType, @Body() createChecklistTemplateDto: CreateChecklistTemplateDto) {
-    console.log("🚀 ~ ChecklistTemplateController ~ create ~ createChecklistTemplateDto:", createChecklistTemplateDto)
     return this.checklistTemplateService.create(createChecklistTemplateDto, user.userId);
   }
 
   @Get()
   findAll(@User() user: UserType) {
-    console.log("🚀 ~ ChecklistTemplateController ~ findAll ~ user:", user)
     return this.checklistTemplateService.findAll(user.userId);
   }
 

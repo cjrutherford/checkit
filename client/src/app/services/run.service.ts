@@ -1,6 +1,9 @@
-import { signal, computed, Injectable } from '@angular/core';
-import { CheckListTemplateDto, RunDto } from '../types';
-import { HttpClient } from '@angular/common/http';
+import { CheckListTemplateDto, CreateRunDto, RunDto } from '../types';
+import { Observable, forkJoin, switchMap } from 'rxjs';
+
+import { ChecklistRunService } from './checklist-run.service';
+import { Injectable } from '@angular/core';
+import { RunTaskService } from './run-task.service';
 
 export interface Run {
   name: string;
@@ -19,40 +22,51 @@ export interface RunState {
   providedIn: 'root'
 })
 export class RunService {
-  private baseUrl = '/api/checklist-run/'
-  constructor(private readonly http: HttpClient) {}
-  private runsSignal = signal<RunDto[]>([]);
+  constructor(
+    private readonly checklistRunService: ChecklistRunService,
+    private readonly runTaskService: RunTaskService
+  ) {}
 
-  get runs() {
-    return this.runsSignal();
-  }
 
   getRuns(){
-    return this.http.get<RunDto[]>(this.baseUrl)
+    return this.checklistRunService.getChecklistRuns()
   }
 
-  addRunFromTemplate(template: CheckListTemplateDto): void {
-    const run: RunDto = {
+  addRunFromTemplate(template: CheckListTemplateDto): Observable<any> {
+    const run: CreateRunDto = {
       ...template,
       title: template.title + ` - Run ${new Date().toLocaleDateString()}`,
+      description: template.description,
       status: 'pending',
-      checklistTemplate: new CheckListTemplateDto,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      checkLisTemplateId: template.id,
     };
-    const currentRuns = this.runsSignal();
-    this.runsSignal.set([...currentRuns, run]);
+    return this.checklistRunService.createChecklistRun(run)
   }
 
-  updateRun(index: number, run: RunDto): void {
-    const currentRuns = [...this.runsSignal()];
-    currentRuns[index] = run;
-    this.runsSignal.set(currentRuns);
+  updateRun(index: number, run: RunDto) {
+    // return this.checklistRunService.
   }
 
-  deleteRun(index: number): void {
-    const currentRuns = [...this.runsSignal()];
-    currentRuns.splice(index, 1);
-    this.runsSignal.set(currentRuns);
+  deleteRun(run: RunDto): Observable<any> {
+    console.log("Deleting run:", run);
+    if (!run) return forkJoin([]); // Return an empty observable if run not found
+
+    const runTaskIds = (run.tasks || []).map(task => task.id);
+
+    console.log("Run task IDs to delete:", runTaskIds);
+    const deleteTasks$ = runTaskIds.length > 0
+      ? forkJoin(runTaskIds.map(id => this.runTaskService.deleteRunTask(id)))
+      : forkJoin([]);
+
+    if (runTaskIds.length === 0) {
+      console.log("No tasks to delete for run:", run.id);
+      return this.checklistRunService.deleteChecklistRun(run.id);
+    }
+    return deleteTasks$.pipe(
+      switchMap(() => {
+        console.log("Deleting checklist run:", run.id);
+        return this.checklistRunService.deleteChecklistRun(run.id)
+      })
+    );
   }
 }

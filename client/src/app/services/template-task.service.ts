@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TemplateTaskService {
-  private baseUrl = '/api/template-task';
-  constructor(private http: HttpClient) {}
+  private readonly  baseUrl = '/api/template-task';
+  constructor(private readonly http: HttpClient) {}
 
   getTemplateTasksByTemplate(templateId: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/template/${templateId}`);

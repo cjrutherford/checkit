@@ -15,7 +15,7 @@ export class ResetComponent {
   error: string = '';
   success: string = '';
 
-  constructor(private auth: AuthService) {}
+  constructor(private readonly auth: AuthService) {}
 
   reset() {
     if (this.resetData.newPassword !== this.resetData.confirmNewPassword) {

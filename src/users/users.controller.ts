@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '../authentication/auth/auth.guard';
-import { CreateUserProfileDto, UserEntity } from '../database/entities';
-import User from '../authentication/user.decorator';
+import { CreateUserProfileDto } from '../database/entities';
+import User, { UserType } from '../authentication/user.decorator';
 
 @UseGuards(AuthGuard)
 @Controller('users')
@@ -11,35 +11,35 @@ export class UsersController {
 
     
     @Get()
-    async getUserProfile(@User() user: UserEntity) {
-        if (!user || !user.id) {
+    async getUserProfile(@User() user: UserType) {
+        if (!user?.userId) {
             throw new Error('User not authenticated');
         }
-        return await this.usersService.getUserProfile(user.id);
+        return await this.usersService.getUserProfile(user.userId);
     }
 
     @Post()
-    async createUserProfile(@User() user: UserEntity, @Body() profileData: CreateUserProfileDto) {
-        if (!user || !user.id) {
+    async createUserProfile(@User() user: UserType, @Body() profileData: CreateUserProfileDto) {
+        if (!user?.userId) {
             throw new Error('User not authenticated');
         }
-        return await this.usersService.createUserProfile(user.id, profileData);
+        return await this.usersService.createUserProfile(user.userId, profileData);
     }
 
 
     @Put('')
-    async updateUserProfile(@User() user: UserEntity, @Body() profileData: CreateUserProfileDto) {
-        if (!user || !user.id) {
+    async updateUserProfile(@User() user: UserType, @Body() profileData: CreateUserProfileDto) {
+        if (!user?.userId) {
             throw new Error('User not authenticated');
         }
-        return await this.usersService.updateUserProfile(user.id, profileData);
+        return await this.usersService.updateUserProfile(user.userId, profileData);
     }
 
     @Delete()
-    async deleteUserProfile(@User() user: UserEntity) {
-        if (!user || !user.id) {
+    async deleteUserProfile(@User() user: UserType) {
+        if (!user?.userId) {
             throw new Error('User not authenticated');
         }
-        return await this.usersService.deleteUserProfile(user.id);
+        return await this.usersService.deleteUserProfile(user.userId);
     }
 }

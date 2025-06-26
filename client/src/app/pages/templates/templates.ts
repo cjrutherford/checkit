@@ -1,6 +1,5 @@
 import { CheckListTemplateDto, CreateChecklistTemplateDto } from '../../types';
-import { Component, effect, OnDestroy, OnInit, signal } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, effect, signal } from '@angular/core';
 
 import { ChecklistTemplateService } from '../../services';
 import { CommonModule } from '@angular/common';
@@ -11,7 +10,7 @@ import { TemplateEdit } from '../../components/template-edit/template-edit';
   selector: 'app-templates',
   imports: [CommonModule, TemplateBlock, TemplateEdit],
   templateUrl: './templates.html',
-  styleUrl: './templates.scss'
+  styleUrl: './templates.scss',
 })
 export class Templates {
   templates = signal<CheckListTemplateDto[]>([]);
@@ -23,26 +22,36 @@ export class Templates {
     tasks: [],
     order: false,
     user: '',
-    checklistRuns: []
+    checklistRuns: [],
   };
   editIndex: number | null = null;
 
-  constructor(private templateService: ChecklistTemplateService) {
+  constructor(private readonly templateService: ChecklistTemplateService) {
     effect(() => {
       this.templateService.getTemplates().subscribe({
         next: (templates: CheckListTemplateDto[]) => {
-
-          this.templates.set(templates.map(t => {
-            t.tasks = t.tasks.map(task => task.description)
-            return t;
-          }));
+          const mappedTemplates = templates.map(this.loadTemplateMappter);
+          this.templates.set(mappedTemplates);
         },
       });
     });
   }
 
+  private loadTemplateMappter(t: CheckListTemplateDto): CheckListTemplateDto {
+    t.tasks = t.tasks.map((task) => task.description);
+    return t;
+  }
+
   openNewTemplateModal(): void {
-    this.selectedTemplate = { id: '', title: '', description: '', tasks: [], order: false, user: '', checklistRuns: [] };
+    this.selectedTemplate = {
+      id: '',
+      title: '',
+      description: '',
+      tasks: [],
+      order: false,
+      user: '',
+      checklistRuns: [],
+    };
     this.editIndex = null;
     this.showModal = true;
   }
@@ -55,11 +64,21 @@ export class Templates {
 
   closeModal(): void {
     this.showModal = false;
-    this.selectedTemplate = { id: '', title: '', description: '', tasks: [], order: false, user: '', checklistRuns: [] };
+    this.selectedTemplate = {
+      id: '',
+      title: '',
+      description: '',
+      tasks: [],
+      order: false,
+      user: '',
+      checklistRuns: [],
+    };
     this.editIndex = null;
   }
 
-  onSaveTemplate(template: CreateChecklistTemplateDto | CheckListTemplateDto): void {
+  onSaveTemplate(
+    template: CreateChecklistTemplateDto | CheckListTemplateDto,
+  ): void {
     if ('id' in template && 'checklistRuns' in template) {
       this.templateService.updateTemplate(template.id, template).subscribe({
         next: (updatedTemplate: CheckListTemplateDto) => {
@@ -73,7 +92,7 @@ export class Templates {
         },
         error: (err) => {
           console.error('Error updating template:', err);
-        }
+        },
       });
     } else {
       this.templateService.createTemplate(template).subscribe({
@@ -84,20 +103,22 @@ export class Templates {
         error: (err) => {
           console.error('Error creating template:', err);
           this.closeModal();
-        }
+        },
       });
     }
   }
 
   deleteTemplate(index: number): void {
     effect(() => {
-      this.templateService.deleteTemplate(this.templates()[index].id).subscribe({
-        next: () => {
-          const originalTemplates = this.templates();
-          this.templates.set(originalTemplates.filter((_, i) => i !== index));
-          this.closeModal();
-        },
-      });
+      this.templateService
+        .deleteTemplate(this.templates()[index].id)
+        .subscribe({
+          next: () => {
+            const originalTemplates = this.templates();
+            this.templates.set(originalTemplates.filter((_, i) => i !== index));
+            this.closeModal();
+          },
+        });
     });
   }
 }

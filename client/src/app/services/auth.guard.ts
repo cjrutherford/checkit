@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router, private auth: AuthService) {}
+  constructor(private readonly router: Router, private readonly auth: AuthService) {}
 
   canActivate(): boolean {
     const token = this.auth.getAuthToken();

@@ -1,9 +1,8 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { authRoutes } from './auth.routes';
 
 @Component({
   selector: 'app-auth',
@@ -20,7 +19,7 @@ export class AuthPage {
   resetData = { oldPassword: '', newPassword: '', confirmNewPassword: '', email: '' };
   error: string = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private readonly auth: AuthService, private readonly router: Router) {}
 
   switchMode(mode: 'login' | 'register' | 'reset') {
     this.mode = mode;
@@ -33,7 +32,7 @@ export class AuthPage {
         this.isLoggedIn.set(true);
         this.router.navigate(['/']);
       },
-      error: err => this.error = err.error?.message || 'Login failed.'
+      error: err => this.error = err.error?.message ?? 'Login failed.'
     });
   }
 
@@ -44,14 +43,14 @@ export class AuthPage {
     }
     this.auth.register(this.registerData).subscribe({
       next: () => this.switchMode('login'),
-      error: err => this.error = err.error?.message || 'Registration failed.'
+      error: err => this.error = err.error?.message ?? 'Registration failed.'
     });
   }
 
   reset() {
     this.auth.resetPassword(this.resetData).subscribe({
       next: () => this.switchMode('login'),
-      error: err => this.error = err.error?.message || 'Reset failed.'
+      error: err => this.error = err.error?.message ?? 'Reset failed.'
     });
   }
 

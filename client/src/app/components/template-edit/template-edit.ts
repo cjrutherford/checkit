@@ -35,14 +35,14 @@ export class TemplateEdit implements OnChanges {
 
   get tasks(): FormArray {
     const tasksArray = this.templateForm.get('tasks') as FormArray<FormControl<string>>;
-    return tasksArray || this.fb.array([]);
+    return tasksArray ?? this.fb.array([]);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['template'] && this.template) {
       this.templateForm.patchValue({
         title: this.template.title || '',
-        description: this.template.description || '',
+        description: this.template.description ?? '',
         order: this.template.order || false
       });
       // Set tasks

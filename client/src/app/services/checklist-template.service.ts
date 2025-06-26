@@ -7,8 +7,8 @@ import { TemplateTaskService } from './template-task.service';
 
 @Injectable({ providedIn: 'root' })
 export class ChecklistTemplateService {
-  private baseUrl = '/api/checklist-template';
-  constructor(private http: HttpClient, private readonly templateTasks: TemplateTaskService) {}
+  private readonly baseUrl = '/api/checklist-template';
+  constructor(private readonly http: HttpClient, private readonly templateTasks: TemplateTaskService) {}
 
   getTemplates(): Observable<CheckListTemplateDto[]> {
     return this.http.get<CheckListTemplateDto[]>(this.baseUrl);
@@ -17,7 +17,6 @@ export class ChecklistTemplateService {
     return this.http.get<CheckListTemplateDto>(`${this.baseUrl}/${id}`);
   }
   createTemplate(data: CreateChecklistTemplateDto): Observable<any> {
-    console.log("🚀 ~ ChecklistTemplateService ~ createTemplate ~ data:", data)
     const tasks: string[] = data.tasks;
     return this.http.post<CheckListTemplateDto>(this.baseUrl, data).pipe(
       switchMap((response) => this.createTemplateSwitchMap(response, tasks)),

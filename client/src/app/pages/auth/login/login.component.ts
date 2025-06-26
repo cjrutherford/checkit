@@ -15,7 +15,7 @@ export class LoginComponent {
   loginData = { email: '', password: '' };
   error: string = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private readonly auth: AuthService, private readonly router: Router) {}
 
   login() {
     this.auth.login(this.loginData).subscribe({

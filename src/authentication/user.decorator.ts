@@ -4,7 +4,7 @@ export type UserType = { userId: string, email: string, iat: number, exp: number
 const User = createParamDecorator(
     async (data: unknown, ctx) => {
         const request = ctx.switchToHttp().getRequest();
-        const token = (request.headers['authorization'] || request.headers['Authorization']).split(' ')[1];
+        const token = (request.headers['authorization'] ?? request.headers['Authorization']).split(' ')[1];
 
         if (!token) {
             throw new Error("No token provided");

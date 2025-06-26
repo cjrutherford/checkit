@@ -5,7 +5,7 @@
     </div>
     <div class="content-grid">
         @for (temp of templates(); track $index) {
-            <div class="content-card" (click)="selectTemplate(temp)">
+            <div class="content-card" (click)="selectTemplate(temp)" (keydown)="selectTemplate(temp)">
                 <h2>{{ temp.title }}</h2>
                 <p>{{ temp.description }}</p>
                 @for (t of temp.tasks; track $index) {

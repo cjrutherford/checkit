@@ -1,9 +1,11 @@
+import { CheckListTemplateDto, RunDto, UpdateRunDto } from '../../types';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
+import { ChecklistRunService } from '../../services/checklist-run.service';
 import { CommonModule } from '@angular/common';
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
-import { Run } from '../../services/run.service';
+import { RunTaskService } from '../../services/run-task.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -13,42 +15,47 @@ import { Subscription } from 'rxjs';
   styleUrl: './view-run.scss'
 })
 export class ViewRun implements OnInit, OnDestroy {
-  private _currentStep = 0;
+  private readonly _currentStep = 0;
 
-  @Input() set run(value: Run) {
+  @Input() set run(value: RunDto) {
+    console.log("🚀 ~ ViewRun ~ @Input ~ value:", value)
     this._run = value;
     this.initialiseTasks();
     this.updateStepAndDisable();
   }
-  get run(): Run {
+  get run(): RunDto {
     return this._run;
   }
-  private _run: Run = {
-    name: '',
+  private _run: RunDto = {
+    id: '',
+    title: '',
     description: '',
     tasks: [],
-    order: false,
-    state: []
+    user: '',
+    status: 'pending',
+    checklistTemplate: {} as CheckListTemplateDto,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
 
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
 
   taskForm: FormGroup;
 
-  private formChangesSub?: Subscription;
+  private readonly formChangesSub?: Subscription;
 
-  constructor(private readonly fb: FormBuilder) {
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly runTaskService: RunTaskService,
+    private readonly checklistRunService: ChecklistRunService
+  ) {
     this.taskForm = this.fb.group({
       tasks: this.fb.array([]),
     });
   }
 
   ngOnInit(): void {
-    this.formChangesSub = this.taskForm.valueChanges.subscribe(() => {
-      this.updateRunStateFromForm();
-      this.syncFormWithState();
-      this.updateStepAndDisable();
-    });
+    // No-op: moved logic to onTaskToggle
     this.syncFormWithState();
     this.updateStepAndDisable();
   }
@@ -58,22 +65,22 @@ export class ViewRun implements OnInit, OnDestroy {
   }
 
   private updateRunStateFromForm(): void {
-    // Always update run.state from the form, and ensure boolean values
+    // Update each task's status based on the checkbox value
     const values = this.taskList.value;
     values.forEach((completed: any, i: number) => {
-      if (this.run.state[i]) {
-        this.run.state[i].completed = !!completed;
+      if (this.run.tasks[i]) {
+        this.run.tasks[i].completed = !!completed;
       }
     });
   }
 
   /**
-   * Ensure the form controls always reflect the current state array.
-   * This prevents desync between the checkboxes and the state.
+   * Ensure the form controls always reflect the current tasks' status.
+   * This prevents desync between the checkboxes and the status.
    */
   private syncFormWithState(): void {
     this.taskList.controls.forEach((ctrl, i) => {
-      const shouldBe = !!this.run.state[i]?.completed;
+      const shouldBe = this.run.tasks[i]?.completed;
       if (ctrl.value !== shouldBe) {
         ctrl.setValue(shouldBe, { emitEvent: false });
       }
@@ -84,11 +91,38 @@ export class ViewRun implements OnInit, OnDestroy {
     return this.taskForm.get('tasks') as FormArray;
   }
 
+  onTaskToggle(index: number): void {
+    const task = this.run.tasks[index];
+    const checked = this.taskList.at(index).value;
+    // Update the task status in backend
+    this.runTaskService.updateRunTask(task.id, { completed: checked }).subscribe(() => {
+      this.run.tasks[index].completed = checked;
+      // Check if all tasks are completed
+      const allCompleted = this.run.tasks.every(t => t.completed);
+      const wasCompleted = !!this.run.completedAt;
+      if (allCompleted && !wasCompleted) {
+        // Mark run as completed
+        const updatedRun: UpdateRunDto = { id: this.run.id, completedAt: new Date() };
+        this.checklistRunService.updateCheckListRun(updatedRun).subscribe(() => {
+          this.run.completedAt = updatedRun.completedAt;
+        });
+      } else if (!allCompleted && wasCompleted) {
+        // Unmark run as completed
+        const updatedRun: UpdateRunDto = { id: this.run.id, completedAt: null };
+        this.checklistRunService.updateCheckListRun(updatedRun).subscribe(() => {
+          this.run.completedAt = null;
+        });
+      }
+    });
+  }
+
   private initialiseTasks(): void {
-    if (!this.run?.state) return;
+    if (!this.run?.tasks) return;
     this.taskList.clear();
-    this.run.state.forEach((task) => {
-      this.taskList.push(this.fb.control(!!task.completed));
+    this.run.tasks.forEach((task, i) => {
+      const control = this.fb.control(task.completed);
+      control.valueChanges.subscribe(() => this.onTaskToggle(i));
+      this.taskList.push(control);
     });
     // No need to updateStepAndDisable
   }
