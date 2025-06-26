@@ -1,3 +1,6 @@
+/**
+ * Service for managing checklist runs, including creation, retrieval, update, and deletion.
+ */
 import { Inject, Injectable } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ChecklistRun, ChecklistTemplate, RunTask } from '../../database/entities';
@@ -7,12 +10,22 @@ import { ChecklistRunStatus } from 'src/database/entities/checklist-run.entity';
 
 @Injectable()
 export class ChecklistRunService {
+    /**
+     * Constructs the ChecklistRunService with injected repositories.
+     */
     constructor(
         @Inject(getRepositoryToken(ChecklistRun)) private readonly checklistRunRepo: Repository<ChecklistRun>,
         @Inject(getRepositoryToken(ChecklistTemplate)) private readonly checklistTemplateRepo: Repository<ChecklistTemplate>,
         @Inject(getRepositoryToken(RunTask)) private readonly runTaskRepo: Repository<RunTask>
     ) { }
 
+    /**
+     * Creates a new checklist run for a user from a template.
+     * @param createChecklistRunDto The checklist run data
+     * @param userId The user's ID
+     * @returns The created checklist run
+     * @throws Error if template not found or checklist run creation fails
+     */
     async create(createChecklistRunDto: CreateChecklistRunDto, userId: string): Promise<ChecklistRun> {
         const template = await this.checklistTemplateRepo.findOne({
             where: { id: createChecklistRunDto.checklistTemplateId },

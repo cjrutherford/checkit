@@ -1,3 +1,6 @@
+/**
+ * Module for authentication features, including controllers, services, and guards.
+ */
 import { AuthGuard } from './auth/auth.guard';
 import { AuthService } from './auth/auth.service';
 import { AuthenticationController } from './authentication.controller';
