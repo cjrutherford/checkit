@@ -1,4 +1,4 @@
-import { Component, signal, computed, effect } from '@angular/core';
+import { Component, computed, effect, signal } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -31,8 +31,7 @@ export declare type ThemeType = {
   },
 })
 export class App {
-  themes: ThemeType[] = [
-    {
+  themes: ThemeType[] = [ {
       name: "Sunny Day",
       light: [
         { code: "#F8F8F8", description: "Off-White Background" },
@@ -145,7 +144,196 @@ export class App {
         { code: "#7FACC1", description: "Ocean Blue" },
         { code: "#D2BA96", description: "Sandy Accent" }
       ]
-    }
+    },
+      {
+    name: "Azure Horizon",
+    light: [
+      { code: "#FFFFFF", description: "Background White" }, // Base for content
+      { code: "#3F51B5", description: "Primary Blue" }, // Main branding/interactive elements
+      { code: "#C5CAE9", description: "Secondary Light Blue" }, // Supporting elements, subtle variations
+      { code: "#00BCD4", description: "Accent Cyan" }, // Calls to action, interactive highlights
+      { code: "#212121", description: "Dark Text" }, // Main body text
+      { code: "#757575", description: "Highlight Medium Gray" }, // Subtle highlights, disabled text, icons
+    ],
+    dark: [
+      { code: "#121212", description: "Dark Gray Background" }, // Base for content
+      { code: "#7986CB", description: "Primary Blue" }, // Main branding/interactive elements (lighter for dark mode)
+      { code: "#303F9F", description: "Secondary Dark Blue" }, // Supporting elements, subtle depth
+      { code: "#4DD0E1", description: "Accent Cyan" }, // Calls to action, interactive highlights (lighter for dark mode)
+      { code: "#E0E0E0", description: "Light Text" }, // Main body text
+      { code: "#B0B0B0", description: "Highlight Medium Light Gray" }, // Subtle highlights, disabled text, icons
+    ],
+  },
+  {
+    name: "Emerald Grove",
+    light: [
+      { code: "#FFFFFF", description: "Background White" },
+      { code: "#4CAF50", description: "Primary Green" },
+      { code: "#C8E6C9", description: "Secondary Light Green" },
+      { code: "#FF4081", description: "Accent Pink" },
+      { code: "#212121", description: "Dark Text" },
+      { code: "#616161", description: "Highlight Medium Gray" },
+    ],
+    dark: [
+      { code: "#1C1C1C", description: "Near Black Background" },
+      { code: "#81C784", description: "Primary Green" },
+      { code: "#388E3C", description: "Secondary Dark Green" },
+      { code: "#FF80AB", description: "Accent Pink" },
+      { code: "#E0E0E0", description: "Light Text" },
+      { code: "#A0A0A0", description: "Highlight Medium Light Gray" },
+    ],
+  },
+  {
+    name: "Crimson Sunset",
+    light: [
+      { code: "#FFFFFF", description: "Background White" },
+      { code: "#E53935", description: "Primary Red" },
+      { code: "#FFCDD2", description: "Secondary Light Red" },
+      { code: "#FFB300", description: "Accent Amber" },
+      { code: "#212121", description: "Dark Text" },
+      { code: "#757575", description: "Highlight Medium Gray" },
+    ],
+    dark: [
+      { code: "#1C1515", description: "Dark Red-Gray Background" },
+      { code: "#EF5350", description: "Primary Red" },
+      { code: "#C62828", description: "Secondary Dark Red" },
+      { code: "#FFD54F", description: "Accent Amber" },
+      { code: "#F5F5F5", description: "Light Text" },
+      { code: "#C0C0C0", description: "Highlight Medium Light Gray" },
+    ],
+  },
+  {
+    name: "Golden Sands",
+    light: [
+      { code: "#FFFFFF", description: "Background White" },
+      { code: "#FF9800", description: "Primary Orange" },
+      { code: "#FFE0B2", description: "Secondary Light Orange" },
+      { code: "#795548", description: "Accent Brown" },
+      { code: "#212121", description: "Dark Text" },
+      { code: "#6D6D6D", description: "Highlight Medium Gray" },
+    ],
+    dark: [
+      { code: "#1F1F1F", description: "Dark Gray Background" },
+      { code: "#FFB74D", description: "Primary Orange" },
+      { code: "#E65100", description: "Secondary Dark Orange" },
+      { code: "#A1887F", description: "Accent Brown" },
+      { code: "#F0F0F0", description: "Light Text" },
+      { code: "#BDBDBD", description: "Highlight Medium Light Gray" },
+    ],
+  },{
+    name: "Royal Grape",
+    light: [
+      { code: "#FFFFFF", description: "Background White" },
+      { code: "#673AB7", description: "Primary Deep Purple" },
+      { code: "#D1C4E9", description: "Secondary Light Purple" },
+      { code: "#FFD740", description: "Accent Gold" }, // A700 equivalent
+      { code: "#212121", description: "Dark Text" },
+      { code: "#757575", description: "Highlight Medium Gray" },
+    ],
+    dark: [
+      { code: "#1A142A", description: "Dark Purple-Gray Background" },
+      { code: "#9575CD", description: "Primary Deep Purple" },
+      { code: "#5E35B1", description: "Secondary Dark Purple" },
+      { code: "#FFEB3B", description: "Accent Gold" }, // A400 equivalent
+      { code: "#F5F5F5", description: "Light Text" },
+      { code: "#C0C0C0", description: "Highlight Medium Light Gray" },
+    ],
+  },
+  {
+    name: "Charcoal Slate",
+    light: [
+      { code: "#FFFFFF", description: "Background White" },
+      { code: "#607D8B", description: "Primary Blue Grey" },
+      { code: "#CFD8DC", description: "Secondary Light Blue Grey" },
+      { code: "#FF5252", description: "Accent Red" }, // A200
+      { code: "#212121", description: "Dark Text" },
+      { code: "#757575", description: "Highlight Medium Gray" },
+    ],
+    dark: [
+      { code: "#263238", description: "Dark Blue Grey Background" },
+      { code: "#90A4AE", description: "Primary Blue Grey" },
+      { code: "#455A64", description: "Secondary Dark Blue Grey" },
+      { code: "#FF8A80", description: "Accent Red" }, // A100
+      { code: "#E0E0E0", description: "Light Text" },
+      { code: "#B0B0B0", description: "Highlight Medium Light Gray" },
+    ],
+  },
+  {
+    name: "Spring Bloom",
+    light: [
+      { code: "#FFFFFF", description: "Background White" },
+      { code: "#8BC34A", description: "Primary Light Green" },
+      { code: "#DCEDC8", description: "Secondary Pale Green" },
+      { code: "#673AB7", description: "Accent Deep Purple" },
+      { code: "#212121", description: "Dark Text" },
+      { code: "#757575", description: "Highlight Medium Gray" },
+    ],
+    dark: [
+      { code: "#1A1A1A", description: "Dark Gray Background" },
+      { code: "#AED581", description: "Primary Light Green" },
+      { code: "#558B2F", description: "Secondary Dark Green" },
+      { code: "#9575CD", description: "Accent Deep Purple" },
+      { code: "#F5F5F5", description: "Light Text" },
+      { code: "#C0C0C0", description: "Highlight Medium Light Gray" },
+    ],
+  },
+  {
+    name: "Mystic Teal",
+    light: [
+      { code: "#FFFFFF", description: "Background White" },
+      { code: "#009688", description: "Primary Teal" },
+      { code: "#B2DFDB", description: "Secondary Light Teal" },
+      { code: "#FFC107", description: "Accent Amber" },
+      { code: "#212121", description: "Dark Text" },
+      { code: "#757575", description: "Highlight Medium Gray" },
+    ],
+    dark: [
+      { code: "#142424", description: "Dark Teal-Gray Background" },
+      { code: "#4DB6AC", description: "Primary Teal" },
+      { code: "#00695C", description: "Secondary Dark Teal" },
+      { code: "#FFD54F", description: "Accent Amber" },
+      { code: "#E0E0E0", description: "Light Text" },
+      { code: "#B0B0B0", description: "Highlight Medium Light Gray" },
+    ],
+  },
+  {
+    name: "Urban Cool",
+    light: [
+      { code: "#FFFFFF", description: "Background White" },
+      { code: "#424242", description: "Primary Grey" },
+      { code: "#EEEEEE", description: "Secondary Light Grey" },
+      { code: "#2196F3", description: "Accent Blue" },
+      { code: "#212121", description: "Dark Text" },
+      { code: "#9E9E9E", description: "Highlight Medium Gray" },
+    ],
+    dark: [
+      { code: "#1C1C1C", description: "Dark Grey Background" },
+      { code: "#BDBDBD", description: "Primary Grey" },
+      { code: "#616161", description: "Secondary Dark Grey" },
+      { code: "#64B5F6", description: "Accent Blue" },
+      { code: "#F5F5F5", description: "Light Text" },
+      { code: "#C0C0C0", description: "Highlight Medium Light Gray" },
+    ],
+  },
+  {
+    name: "Vibrant Retro",
+    light: [
+      { code: "#FFFFFF", description: "Background White" },
+      { code: "#FFEB3B", description: "Primary Yellow" },
+      { code: "#FFF9C4", description: "Secondary Pale Yellow" },
+      { code: "#E91E63", description: "Accent Pink" },
+      { code: "#212121", description: "Dark Text" },
+      { code: "#757575", description: "Highlight Medium Gray" },
+    ],
+    dark: [
+      { code: "#1A1A1A", description: "Dark Gray Background" },
+      { code: "#FFEA00", description: "Primary Yellow" },
+      { code: "#FBC02D", description: "Secondary Dark Yellow" },
+      { code: "#FF80AB", description: "Accent Pink" },
+      { code: "#E0E0E0", description: "Light Text" },
+      { code: "#A0A0A0", description: "Highlight Medium Light Gray" },
+    ],
+  },
   ];
 
   // Signals for theme state

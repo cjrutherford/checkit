@@ -73,29 +73,30 @@
 }
 
 .edit-btn {
-  background: #1976d2;
-  color: #fff;
+  background: var(--accent);
+  color: var(--text);
 }
 
 .save-btn {
-  background: #28a745;
-  color: #fff;
+  background: var(--accent);
+  color: var(--text);
 }
 
 .cancel-btn {
-  background: #e0e0e0;
-  color: #333;
+  background: rgba(156, 36, 36, 0.8);
+  color: var(--text);
 }
 
 .edit-username,
 .edit-bio {
   width: 100%;
   box-sizing: border-box;
+  color: var(--primary);
   padding: 0.75rem 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--highlight);
   border-radius: 4px;
   font-size: 1rem;
-  background: #fafafa;
+  background: var(--accent);
 }
 
 .edit-bio {

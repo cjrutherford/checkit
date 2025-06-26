@@ -23,7 +23,7 @@ export class CreateRun {
       this.templateService.getTemplates()
       .subscribe({
         next: (templates: CheckListTemplateDto[]) => {
-          const newTemplates = templates.map(this.loadTemplateMapper);
+          const newTemplates = templates.map(template => this.loadTemplateMapper(template));
           this.templates.set(newTemplates);
           },
           error: (error: any) => {
@@ -33,18 +33,18 @@ export class CreateRun {
     });
   }
 
-  private loadTemplateMapper(template: CheckListTemplateDto) {
+  private loadTemplateMapper(template: CheckListTemplateDto): CheckListTemplateDto {
     // This function can be used to map templates if needed
     const dto: CheckListTemplateDto = {
       title: template.title,
       description: template.description,
-      tasks: template.tasks.map(this.loadTaskMapper),
+      tasks: template.tasks.map(task => ({...this.loadTaskMapper(task)})),
       id: template.id || '',
       user: undefined,
       order: false,
-      checklistRuns: []
+      checklistRuns: [] as RunDto[]
     };
-    return dto;
+    return {...dto};
   }
 
   private loadTaskMapper(task: any) {

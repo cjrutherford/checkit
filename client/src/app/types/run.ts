@@ -15,7 +15,7 @@ export class RunDto {
     completedAt?: Date | null; // Timestamp of when the run was completed, if applicable
 }
 
-export class UpdateRunDto{
+export interface UpdateRunDto{
     id: string;
     title?: string; // Optional field to update the title of the run
     description?: string; // Optional field to update the description of the run
@@ -23,14 +23,14 @@ export class UpdateRunDto{
     completedAt?: Date | null; // Optional field to update the completion timestamp of the run
 }
 
-export class CreateRunDto {
+export interface CreateRunDto {
     checkLisTemplateId: string; // Reference id of CheckListTemplateDto
     title: string; // Title of the run
     description?: string; // Optional field for run description
     status: RunStatus; // Status of the run (e.g., 'pending', 'in_progress', 'completed', 'cancelled')
 }
 
-export class RunTaskDto {
+export interface RunTaskDto {
     id: string;
     checklistRun: string; // Reference id of RunDto
     description?: string; // Optional field for task description
@@ -39,11 +39,11 @@ export class RunTaskDto {
     completedAt?: Date; // Timestamp of when the task was completed, if applicable
 }
 
-export class CreateRunTaskDto {
+export interface CreateRunTaskDto {
     checklistRunId: string;
     description: string; // Description of the task
 }
 
-export class UpdateRunTaskDto {
+export interface UpdateRunTaskDto {
     completed?: boolean; // Optional field to update the completion status of the task
 }

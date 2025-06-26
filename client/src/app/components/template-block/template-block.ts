@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { CheckListTemplateDto } from '../../types';
+import { RunService } from '../../services/run.service';
 
 /**
  * TemplateBlock component: displays a checklist template block with edit/delete actions.
@@ -19,19 +20,27 @@ export class TemplateBlock {
     user: undefined,
     checklistRuns: []
   };
-  @Output() onEdit = new EventEmitter<void>();
-  @Output() onDelete = new EventEmitter<void>();
+  @Output() onEdit = new EventEmitter<CheckListTemplateDto>();
+  @Output() onDelete = new EventEmitter<CheckListTemplateDto>();
 
-  editTemplate(template: any): void {  
-    this.onEdit.emit();
+  constructor(private readonly runService: RunService) {}
+
+  editTemplate(template: CheckListTemplateDto): void {
+    this.onEdit.emit(template);
   }
 
-  deleteTemplate(template: any): void {
-    this.onDelete.emit();
+  deleteTemplate(template: CheckListTemplateDto): void {
+    this.onDelete.emit(template);
   }
 
   useTemplate(template: any): void {
-    // Logic to duplicate the template
-    console.log('Selecting template:', this.template);
+    this.runService.addRunFromTemplate(template).subscribe({
+      next: (run) => {
+        console.log('Template used for new run:', run);
+      },
+      error: (err) => {
+        console.error('Error using template:', err);
+      }
+    });
   }
 }
