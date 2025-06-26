@@ -1,3 +1,9 @@
+/**
+ * Templates page component: manages checklist templates.
+ * - Fetches and displays templates
+ * - Allows editing, creating, and selecting templates
+ */
+
 import { CheckListTemplateDto, CreateChecklistTemplateDto } from '../../types';
 import { Component, effect, signal } from '@angular/core';
 
@@ -15,7 +21,7 @@ import { TemplateEdit } from '../../components/template-edit/template-edit';
 export class Templates {
   templates = signal<CheckListTemplateDto[]>([]);
   showModal = false;
-  selectedTemplate: CheckListTemplateDto = {
+  selectedTemplate?: CheckListTemplateDto = {
     id: '',
     title: '',
     description: '',
@@ -108,17 +114,17 @@ export class Templates {
     }
   }
 
-  deleteTemplate(index: number): void {
-    effect(() => {
+  deleteTemplate(index: number, template: CheckListTemplateDto): void {
+      const templateId = template.id;
       this.templateService
-        .deleteTemplate(this.templates()[index].id)
+        .deleteTemplate(templateId)
         .subscribe({
           next: () => {
             const originalTemplates = this.templates();
-            this.templates.set(originalTemplates.filter((_, i) => i !== index));
+            const filtered = originalTemplates.filter((_, i) => i !== index);
+            this.templates.set(filtered);
             this.closeModal();
           },
         });
-    });
   }
 }

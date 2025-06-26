@@ -1,0 +1,23 @@
+{
+  "jest.jestCommandLine": "npx jest",
+  "jest.rootPath": "",
+  "jest.jestConfigPath": "jest.config.js",
+  "jest.projects": [
+    {
+      "displayName": "backend",
+      "rootPath": ".",
+      "jestConfigPath": "jest.config.js"
+    },
+    {
+      "displayName": "client",
+      "rootPath": "client",
+      "jestConfigPath": "jest.config.js"
+    }
+  ],
+    "jest.coverageColors": {
+        "lines": "#4caf50",
+        "functions": "#2196f3",
+        "branches": "#ff9800",
+        "statements": "#f44336"
+    },
+}

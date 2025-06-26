@@ -9,7 +9,7 @@
         <button class="new-button" (click)="openNewTemplateModal()">➕ Create Template</button>
     </div>
     <ng-container *ngFor="let template of templates(); let i = index">
-        <app-template-block [template]="template" (onEdit)="openEditTemplateModal(i)" (onDelete)="deleteTemplate(i)"></app-template-block>
+        <app-template-block [template]="template" (onEdit)="openEditTemplateModal(i)" (onDelete)="deleteTemplate(i, $event)"></app-template-block>
     </ng-container>
 </div>
-<app-template-edit *ngIf="showModal" [template]="selectedTemplate" (save)="onSaveTemplate($event)" (cancel)="closeModal()"></app-template-edit>
+<app-template-edit *ngIf="showModal && selectedTemplate" [template]="selectedTemplate" (save)="onSaveTemplate($event)" (cancel)="closeModal()"></app-template-edit>

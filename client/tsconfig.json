@@ -13,7 +13,11 @@
     "target": "ES2022",
     "module": "preserve",
     "strictPropertyInitialization": false,
-    "sourceMap": true // already enabled globally
+    "sourceMap": true, // already enabled globally,
+    "types": [
+      "jest",
+      "node"
+    ],
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

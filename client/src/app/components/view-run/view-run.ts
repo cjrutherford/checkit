@@ -1,6 +1,18 @@
 import { CheckListTemplateDto, RunDto, UpdateRunDto } from '../../types';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 import { ChecklistRunService } from '../../services/checklist-run.service';
 import { CommonModule } from '@angular/common';
@@ -12,13 +24,13 @@ import { Subscription } from 'rxjs';
   selector: 'app-view-run',
   imports: [CommonModule, ProgressBarComponent, ReactiveFormsModule],
   templateUrl: './view-run.html',
-  styleUrl: './view-run.scss'
+  styleUrl: './view-run.scss',
 })
-export class ViewRun implements OnInit, OnDestroy {
+export class ViewRun {
   private readonly _currentStep = 0;
 
   @Input() set run(value: RunDto) {
-    console.log("🚀 ~ ViewRun ~ @Input ~ value:", value)
+    console.log('🚀 ~ ViewRun ~ @Input ~ value:', value);
     this._run = value;
     this.initialiseTasks();
     this.updateStepAndDisable();
@@ -47,18 +59,13 @@ export class ViewRun implements OnInit, OnDestroy {
   constructor(
     private readonly fb: FormBuilder,
     private readonly runTaskService: RunTaskService,
-    private readonly checklistRunService: ChecklistRunService
+    private readonly checklistRunService: ChecklistRunService,
   ) {
     this.taskForm = this.fb.group({
       tasks: this.fb.array([]),
     });
   }
 
-  ngOnInit(): void {
-    // No-op: moved logic to onTaskToggle
-    this.syncFormWithState();
-    this.updateStepAndDisable();
-  }
 
   ngOnDestroy(): void {
     this.formChangesSub?.unsubscribe();
@@ -91,29 +98,24 @@ export class ViewRun implements OnInit, OnDestroy {
     return this.taskForm.get('tasks') as FormArray;
   }
 
-  onTaskToggle(index: number): void {
-    const task = this.run.tasks[index];
-    const checked = this.taskList.at(index).value;
-    // Update the task status in backend
-    this.runTaskService.updateRunTask(task.id, { completed: checked }).subscribe(() => {
-      this.run.tasks[index].completed = checked;
-      // Check if all tasks are completed
-      const allCompleted = this.run.tasks.every(t => t.completed);
-      const wasCompleted = !!this.run.completedAt;
-      if (allCompleted && !wasCompleted) {
-        // Mark run as completed
-        const updatedRun: UpdateRunDto = { id: this.run.id, completedAt: new Date() };
-        this.checklistRunService.updateCheckListRun(updatedRun).subscribe(() => {
-          this.run.completedAt = updatedRun.completedAt;
-        });
-      } else if (!allCompleted && wasCompleted) {
-        // Unmark run as completed
-        const updatedRun: UpdateRunDto = { id: this.run.id, completedAt: null };
-        this.checklistRunService.updateCheckListRun(updatedRun).subscribe(() => {
-          this.run.completedAt = null;
-        });
-      }
-    });
+
+  private updateStepAndDisable(): void {
+    if (this.run?.checklistTemplate?.order) {
+      // Find the first incomplete task
+      const firstIncompleteIdx = this.run.tasks.findIndex((t) => !t.completed);
+      this.taskList.controls.forEach((ctrl, i) => {
+        if (i === firstIncompleteIdx || this.run.tasks[i].completed) {
+          ctrl.enable({ emitEvent: false });
+        } else {
+          ctrl.disable({ emitEvent: false });
+        }
+      });
+    } else {
+      // If order doesn't matter, enable all controls
+      this.taskList.controls.forEach((ctrl) =>
+        ctrl.enable({ emitEvent: false }),
+      );
+    }
   }
 
   private initialiseTasks(): void {
@@ -124,22 +126,52 @@ export class ViewRun implements OnInit, OnDestroy {
       control.valueChanges.subscribe(() => this.onTaskToggle(i));
       this.taskList.push(control);
     });
-    // No need to updateStepAndDisable
+    this.updateStepAndDisable(); // <-- Call after initializing tasks
   }
 
-  private updateStepAndDisable(): void {
-    // No-op: disabling/enabling toggles is removed
-  }
-
-  private processControlStates(): void {
-    // No-op: disabling/enabling toggles is removed
+  onTaskToggle(index: number): void {
+    const task = this.run.tasks[index];
+    const checked = this.taskList.at(index).value;
+    // Update the task status in backend
+    this.runTaskService
+      .updateRunTask(task.id, { completed: checked })
+      .subscribe(() => {
+        this.run.tasks[index].completed = checked;
+        // Check if all tasks are completed
+        const allCompleted = this.run.tasks.every((t) => t.completed);
+        const wasCompleted = !!this.run.completedAt;
+        if (allCompleted && !wasCompleted) {
+          // Mark run as completed
+          const updatedRun: UpdateRunDto = {
+            id: this.run.id,
+            completedAt: new Date(),
+          };
+          this.checklistRunService
+            .updateCheckListRun(updatedRun)
+            .subscribe(() => {
+              this.run.completedAt = updatedRun.completedAt;
+            });
+        } else if (!allCompleted && wasCompleted) {
+          // Unmark run as completed
+          const updatedRun: UpdateRunDto = {
+            id: this.run.id,
+            completedAt: null,
+          };
+          this.checklistRunService
+            .updateCheckListRun(updatedRun)
+            .subscribe(() => {
+              this.run.completedAt = null;
+            });
+        }
+        this.updateStepAndDisable(); // <-- Update enabled/disabled state after toggle
+      });
   }
 
   get completion(): number {
     // Calculate completion based on the actual checkbox values for full sync
     const total = this.taskList.length;
     if (!total) return 0;
-    const checked = this.taskList.controls.filter(ctrl => ctrl.value).length;
+    const checked = this.taskList.controls.filter((ctrl) => ctrl.value).length;
     return Math.round((checked / total) * 100);
   }
 

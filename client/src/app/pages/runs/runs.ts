@@ -1,3 +1,9 @@
+/**
+ * Runs page component: displays and manages user checklist runs.
+ * - Fetches runs from the backend
+ * - Allows creating and viewing runs
+ */
+
 import { Component, effect, signal } from '@angular/core';
 
 import { CommonModule } from '@angular/common';

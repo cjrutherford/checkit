@@ -1,6 +1,11 @@
 import { Component, Input } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 
+/**
+ * ProgressBarComponent: displays a progress bar for completion percentage.
+ * - Accepts a completion input (0-100)
+ */
 @Component({
   selector: 'app-progress-bar',
   standalone: true,

@@ -5,7 +5,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateChecklistTemplateDto } from '../dto/create-checklist-template.dto';
 import { UpdateChecklistTemplateDto } from '../dto/update-checklist-template.dto';
 import { Repository } from 'typeorm';
-import { ChecklistTemplate, UserEntity } from '../../database/entities';
+import { ChecklistRun, ChecklistTemplate, TemplateTask, UserEntity } from '../../database/entities';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 @Injectable()
@@ -15,7 +15,9 @@ export class ChecklistTemplateService {
    */
   constructor(
     @Inject(getRepositoryToken(ChecklistTemplate)) private readonly checklistTemplateRepo: Repository<ChecklistTemplate>,
-    @Inject(getRepositoryToken(UserEntity)) private readonly userRepo: Repository<UserEntity>
+    @Inject(getRepositoryToken(UserEntity)) private readonly userRepo: Repository<UserEntity>,
+    @Inject(getRepositoryToken(ChecklistRun)) private readonly checklistRunRepo: Repository<ChecklistRun>,
+    @Inject(getRepositoryToken(TemplateTask)) private readonly templateTaskRepo: Repository<TemplateTask>,
   ) { }
 
   /**
@@ -91,7 +93,16 @@ export class ChecklistTemplateService {
    * @throws Error if template not found
    */
   async remove(id: string) {
-    const checklistTemplate = await this.checklistTemplateRepo.findOne({ where: { id } });
+    const checklistTemplate = await this.checklistTemplateRepo.findOne({ where: { id } , relations: ['tasks', 'checklistRuns']});
+    if (!checklistTemplate) {
+      throw new Error(`Checklist template with id ${id} not found`);
+    }
+    for (const task of checklistTemplate.tasks) {
+      await this.templateTaskRepo.remove(task);
+    }
+    for (const run of checklistTemplate.checklistRuns) {
+      await this.checklistRunRepo.remove(run);
+    }
     if (!checklistTemplate) {
       throw new Error(`Checklist template with id ${id} not found`);
     }
