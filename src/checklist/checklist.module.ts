@@ -1,18 +1,23 @@
-import { Module } from "@nestjs/common";
+import { ChecklistRun, ChecklistTemplate, RunTask, TemplateTask } from "../database/entities";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+
+import { ChecklistRunController } from "./checklist-run/checklist-run.controller";
+import { ChecklistRunService } from './checklist-run/checklist-run.service';
 import { ChecklistTemplateController } from "./checklist-template/checklist-template.controller";
 import { ChecklistTemplateService } from "./checklist-template/checklist-template.service";
-import { DatabaseModule } from "../database/database.module";
-import { ChecklistTemplate, TemplateTask, RunTask, ChecklistRun } from "../database/entities";
-import { getRepositoryToken } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
-import { TemplateTaskService } from './template-task/template-task.service';
-import { RunTaskService } from './run-task/run-task.service';
-import { ChecklistRunService } from './checklist-run/checklist-run.service';
-import { ChecklistRunController } from "./checklist-run/checklist-run.controller";
-import { RunTaskController } from "./run-task/run-task.controller";
-import { TemplateTaskController } from "./template-task/template-task.controller";
+import { DatabaseModule } from "../database/database.module";
 import { InternalConfigModule } from "../internal-config/internal-config.module";
+/**
+ * Module for checklist features, including templates, runs, and tasks.
+ * Bundles controllers and services for checklist management.
+ */
+import { Module } from "@nestjs/common";
+import { RunTaskController } from "./run-task/run-task.controller";
+import { RunTaskService } from './run-task/run-task.service';
+import { TemplateTaskController } from "./template-task/template-task.controller";
+import { TemplateTaskService } from './template-task/template-task.service';
+import { getRepositoryToken } from "@nestjs/typeorm";
 
 @Module({
     imports: [

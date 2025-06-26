@@ -1,3 +1,7 @@
+/**
+ * Controller for authentication-related endpoints (login, register, reset password).
+ * Handles user authentication and delegates logic to the AuthService.
+ */
 import { Body, Controller, Post, Res, HttpException } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth/auth.service';
@@ -7,9 +11,16 @@ import { Response } from 'express';
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthenticationController {
-
+    /**
+     * Injects the AuthService for authentication logic.
+     */
     constructor(private readonly authService: AuthService) {}
 
+    /**
+     * Authenticates a user and returns a JWT token.
+     * @param loginDto The login credentials (email, password)
+     * @returns An object containing the JWT token
+     */
     @Post('login')
     async login(@Body() loginDto: LoginDto): Promise<{ token: string }> {
         try {
@@ -24,6 +35,12 @@ export class AuthenticationController {
         }
     }
 
+    /**
+     * Registers a new user.
+     * @param createUserDto The registration data (email, password, confirmPassword)
+     * @param response The HTTP response object
+     * @returns An object containing a success message
+     */
     @Post('register')
     async register(@Body() createUserDto: CreateUserDto, @Res() response: Response): Promise<{message: string}> {
         try{
@@ -37,6 +54,12 @@ export class AuthenticationController {
             );
         }
     }
+
+    /**
+     * Resets a user's password.
+     * @param resetUserPasswordDto The reset password data (email, oldPassword, newPassword, confirmNewPassword)
+     * @returns An object containing a success message
+     */
     @Post('reset-password')
     async resetPassword(@Body() resetUserPasswordDto: ResetUserPasswordDto): Promise<{message: string}> {
         try {
@@ -56,6 +79,11 @@ export class AuthenticationController {
         }
     }
 
+    /**
+     * Logs out a user.
+     * @param token The JWT token of the user to be logged out
+     * @returns An object containing a success message
+     */
     @Post('logout')
     async logout(@Body('token') token: string): Promise<{message: string}> {
         try {

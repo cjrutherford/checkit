@@ -1,3 +1,6 @@
+/**
+ * Service for handling user profile logic, including CRUD operations and asset management.
+ */
 import { Inject, Injectable } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { AssetService } from '../asset/asset.service';
@@ -6,11 +9,20 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
+    /**
+     * Constructs the UsersService with injected repositories and asset service.
+     */
     constructor(
         @Inject(getRepositoryToken(UserProfileEntity)) private readonly userProfileRepo: Repository<UserProfileEntity>,
         private readonly assetService: AssetService
     ) {}
 
+    /**
+     * Retrieves a user's profile and returns it with the profile picture as a base64 string.
+     * @param userId The user's ID
+     * @returns The user's profile entity with base64 profile picture
+     * @throws Error if profile or profile picture is not found
+     */
     async getUserProfile(userId: string): Promise<UserProfileEntity> {
         const profile = await this.userProfileRepo.findOne({
             where: { user: { id: userId }},
@@ -29,6 +41,13 @@ export class UsersService {
         };
     }
 
+    /**
+     * Creates a new user profile and saves the profile picture asset.
+     * @param userId The user's ID
+     * @param profileData The profile data (profilePictureUrl as base64 string)
+     * @returns The created user profile entity
+     * @throws Error if profile already exists or picture is missing
+     */
     async createUserProfile(userId: string, profileData: Partial<UserProfileEntity>): Promise<UserProfileEntity> { 
         const existingProfile = await this.userProfileRepo.findOne({
             where: { user: {id: userId} },
@@ -51,6 +70,13 @@ export class UsersService {
         return newProfileFinal;
     }
 
+    /**
+     * Updates an existing user profile with new data.
+     * @param userId The user's ID
+     * @param profileData The new profile data (profilePictureUrl as base64 string, etc.)
+     * @returns The updated user profile entity
+     * @throws Error if profile not found
+     */
     async updateUserProfile(userId: string, profileData: Partial<UserProfileEntity>): Promise<UserProfileEntity> {
         const existingProfile = await this.userProfileRepo.findOne({
             where: { user: { id: userId } },
@@ -71,6 +97,11 @@ export class UsersService {
         return await this.userProfileRepo.save(existingProfile);
     }
 
+    /**
+     * Deletes a user profile and its associated assets.
+     * @param userId The user's ID
+     * @throws Error if profile not found
+     */
     async deleteUserProfile(userId: string): Promise<void> {
         const existingProfile = await this.userProfileRepo.findOne({
             where: { user: { id: userId }},
