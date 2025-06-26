@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DatabaseModule } from 'src/database/database.module';
-import { ChecklistRun, ChecklistTemplate, RunTask, SaltEntity, TemplateTask, TokenEntity, UserEntity, UserProfileDto, UserProfileEntity } from 'src/database/entities';
+import { ChecklistRun, ChecklistTemplate, RunTask, SaltEntity, TemplateTask, TokenEntity, UserEntity, UserProfileEntity } from '../database/entities';
 import { DataSource } from 'typeorm';
 
 @Module({

@@ -13,7 +13,7 @@ export class UsersService {
 
     async getUserProfile(userId: string): Promise<UserProfileEntity> {
         const profile = await this.userProfileRepo.findOne({
-            where: { id: userId },
+            where: { user: { id: userId }},
         });
         if (!profile) {
             throw new Error(`User profile not found for user ID: ${userId}`);
@@ -47,7 +47,8 @@ export class UsersService {
             profilePictureUrl,
             user: {id: userId}, 
         });
-        return await this.userProfileRepo.save(newProfile);
+        const newProfileFinal =  await this.userProfileRepo.save(newProfile);
+        return newProfileFinal;
     }
 
     async updateUserProfile(userId: string, profileData: Partial<UserProfileEntity>): Promise<UserProfileEntity> {

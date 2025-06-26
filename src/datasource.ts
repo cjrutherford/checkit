@@ -1,22 +1,22 @@
-import { DataSource, DataSourceOptions } from "typeorm";
-import { 
-    ChecklistTemplate,
+import {
     ChecklistRun,
+    ChecklistTemplate,
     RunTask,
+    SaltEntity,
     TemplateTask,
+    TokenEntity,
     UserEntity,
     UserProfileEntity,
-    TokenEntity,
-    SaltEntity,
- } from "./database/entities";
+} from "./database/entities";
+import { DataSource, DataSourceOptions } from "typeorm";
 
- const config: DataSourceOptions = {
+const config: DataSourceOptions = {
     type: 'postgres',
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432', 10),
-    username: process.env.DB_USERNAME || 'postgres',
-    password: process.env.DB_PASSWORD || 'postgres',
-    database: process.env.DB_NAME || 'checkit',
+    host: process.env.DB_HOST ?? 'localhost',
+    port: parseInt(process.env.DB_PORT ?? '5432', 10),
+    username: process.env.DB_USERNAME ?? 'postgres',
+    password: process.env.DB_PASSWORD ?? 'postgres',
+    database: process.env.DB_NAME ?? 'checkit',
     entities: [
         ChecklistTemplate,
         ChecklistRun,
@@ -30,14 +30,6 @@ import {
     migrations: ['src/database/migrations/*.ts'],
  }
 
- console.log('Database configuration:', {
-    host: config.host,
-    port: config.port,
-    username: config.username,
-    password: config.password,
-    database: config.database,
- });
- 
 
 const ds = new DataSource(config);
 

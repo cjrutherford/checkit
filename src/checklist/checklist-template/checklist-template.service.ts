@@ -2,17 +2,25 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateChecklistTemplateDto } from '../dto/create-checklist-template.dto';
 import { UpdateChecklistTemplateDto } from '../dto/update-checklist-template.dto';
 import { Repository } from 'typeorm';
-import { ChecklistTemplate } from '../../database/entities';
+import { ChecklistTemplate, UserEntity } from '../../database/entities';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 @Injectable()
 export class ChecklistTemplateService {
   constructor(
-    @Inject(getRepositoryToken(ChecklistTemplate)) private readonly checklistTemplateRepo: Repository<ChecklistTemplate>
+    @Inject(getRepositoryToken(ChecklistTemplate)) private readonly checklistTemplateRepo: Repository<ChecklistTemplate>,
+    @Inject(getRepositoryToken(UserEntity)) private readonly userRepo: Repository<UserEntity>
   ) { }
 
-  async create(createChecklistTemplateDto: CreateChecklistTemplateDto) {
-    const checklistTemplate = this.checklistTemplateRepo.create(createChecklistTemplateDto);
+  async create(createChecklistTemplateDto: CreateChecklistTemplateDto, userId: string) {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new Error(`User with id ${userId} not found`);
+    }
+    const checklistTemplate = this.checklistTemplateRepo.create({
+      ...createChecklistTemplateDto, 
+      user,
+    });
     return await this.checklistTemplateRepo.save(checklistTemplate);
   }
 

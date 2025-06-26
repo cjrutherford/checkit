@@ -1,0 +1,15 @@
+<div class="card-container">
+    <h1>Checklist Templates</h1>
+    <p>Templates are reusable components that can be used to create new pages or sections in your application. They help maintain consistency and speed up development.</p>
+    <p>To create a new template, click on the "Create Template" button below. You can then use this template in various parts of your application.</p>
+</div>
+<div class="grid-list">
+    <div class="add-container">
+        <h2>Start a new Checklist</h2>
+        <button class="new-button" (click)="openNewTemplateModal()">➕ Create Template</button>
+    </div>
+    <ng-container *ngFor="let template of templates(); let i = index">
+        <app-template-block [template]="template" (onEdit)="openEditTemplateModal(i)" (onDelete)="deleteTemplate(i)"></app-template-block>
+    </ng-container>
+</div>
+<app-template-edit *ngIf="showModal" [template]="selectedTemplate" (save)="onSaveTemplate($event)" (cancel)="closeModal()"></app-template-edit>

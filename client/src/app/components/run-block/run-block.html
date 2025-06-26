@@ -1,0 +1,18 @@
+<div class="content-card">
+    <div class="title">
+        <h2>{{run.title}}</h2>
+        <p>{{run.description}}</p>
+    </div>
+    <div class="stats">
+        <div class="next-task">
+            Next Task: {{nextTask}}
+        </div>
+        <div class="progression">
+            <app-progress-bar [completion]="completion"></app-progress-bar>
+        </div>
+    </div>
+    <div class="actions">
+        <button class="btn btn-primary" (click)="viewRun()">View</button>
+        <button class="btn btn-primary" (click)="deleteRun()">Delete</button>
+    </div>
+</div>

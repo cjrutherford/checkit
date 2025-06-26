@@ -1,7 +1,8 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import UserEntity from "./user.entity";
+
 import ChecklistRun from "./checklist-run.entity";
 import TemplateTask from "./template-task.entity";
+import UserEntity from "./user.entity";
 
 @Entity()
 export default class ChecklistTemplate {
@@ -16,6 +17,9 @@ export default class ChecklistTemplate {
 
     @Column({ type: "text", nullable: true })
     description: string;
+
+    @Column({ type: 'bool', default: false })
+    order: boolean;
 
     @OneToMany(() => TemplateTask, task => task.checklistTemplate)
     tasks: TemplateTask[];

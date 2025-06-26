@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { TemplateTask } from '../../database/entities';
+import { ChecklistTemplate, TemplateTask } from '../../database/entities';
 import { Repository } from 'typeorm';
 import CreateTemplateTaskDto from '../dto/create-template-task.dto';
 import UpdateTemplateTaskDto from '../dto/update-template-task.dto';
@@ -8,11 +8,16 @@ import UpdateTemplateTaskDto from '../dto/update-template-task.dto';
 @Injectable()
 export class TemplateTaskService {
     constructor(
-        @Inject(getRepositoryToken(TemplateTask)) private readonly templateTaskRepository: Repository<TemplateTask>
+        @Inject(getRepositoryToken(TemplateTask)) private readonly templateTaskRepository: Repository<TemplateTask>,
+        @Inject(getRepositoryToken(ChecklistTemplate)) private readonly checklistTemplateRepository: Repository<ChecklistTemplate>
     ) {}
 
     async create(templateTask: CreateTemplateTaskDto): Promise<TemplateTask> {
-        return await this.templateTaskRepository.save(templateTask);
+        const checklistTemplate = await this.checklistTemplateRepository.findOne({ where: { id: templateTask.checklistTemplateId } });
+        if (!checklistTemplate) {
+            throw new Error(`ChecklistTemplate with id ${templateTask.checklistTemplateId} not found`);
+        }
+        return await this.templateTaskRepository.save({ ...templateTask, checklistTemplate });
     }
 
     async findAll(templateId: string): Promise<TemplateTask[]> {

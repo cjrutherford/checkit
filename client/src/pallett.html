@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Palettes Display with Darkened Swatches</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif; /* Using Inter as requested */
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        .palette-section {
+            background-color: #fff;
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            padding: 25px;
+        }
+        .palette-title {
+            font-size: 2.2em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 12px;
+            font-weight: bold;
+        }
+        .section-subtitle {
+            font-size: 1.4em;
+            color: #4a6b72; /* A shade from one of your palettes */
+            margin-top: 25px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #eee;
+        }
+        .color-list {
+            display: flex;
+            flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+            gap: 15px; /* Spacing between color items */
+        }
+        .color-item {
+            display: flex;
+            align-items: center;
+            background-color: #fcfcfc;
+            border-radius: 8px;
+            padding: 10px 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            min-width: 280px; /* Ensure items don't get too small */
+            flex: 1; /* Allow items to grow/shrink */
+        }
+        .color-swatch {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px; /* Rounded corners */
+            border: 1px solid #ddd;
+            margin-right: 15px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            flex-shrink: 0; /* Prevent swatch from shrinking */
+        }
+        .color-info {
+            font-size: 1.05em;
+            color: #555;
+            flex-grow: 1;
+        }
+        .color-info strong {
+            color: #333;
+        }
+        .palette-strip {
+            display: flex;
+            width: 100%;
+            height: 70px; /* Slightly taller strip */
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        .palette-strip .strip-color {
+            flex-grow: 1;
+            height: 100%;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                margin: 15px;
+            }
+            .palette-section {
+                padding: 15px;
+            }
+            .palette-title {
+                font-size: 1.8em;
+                margin-bottom: 15px;
+            }
+            .section-subtitle {
+                font-size: 1.2em;
+                margin-top: 20px;
+                margin-bottom: 10px;
+            }
+            .color-item {
+                flex-direction: row; /* Keep horizontal on small screens */
+                min-width: unset; /* Remove min-width for better wrapping */
+                width: 100%; /* Make them take full width */
+            }
+            .palette-strip {
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="palette-section">
+        <h2 class="palette-title">Serene Dawn</h2>
+        <h3 class="section-subtitle">Original Tones</h3>
+        <div class="color-list">
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #F8F8F8;"></div>
+                <div class="color-info"><strong>#F8F8F8</strong> (Off-White Background)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #E0E7EB;"></div>
+                <div class="color-info"><strong>#E0E7EB</strong> (Light Gray-Blue)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #B3C5CE;"></div>
+                <div class="color-info"><strong>#B3C5CE</strong> (Medium Gray-Blue)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #7A9CA9;"></div>
+                <div class="color-info"><strong>#7A9CA9</strong> (Dusty Teal)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #4A6B72;"></div>
+                <div class="color-info"><strong>#4A6B72</strong> (Deep Slate-Teal)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #D3B89F;"></div>
+                <div class="color-info"><strong>#D3B89F</strong> (Soft Tan Accent)</div>
+            </div>
+        </div>
+        <h3 class="section-subtitle">Darkened Tones</h3>
+        <div class="color-list">
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #DADADA;"></div>
+                <div class="color-info"><strong>#DADADA</strong> (Darkened Off-White)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #C6CED1;"></div>
+                <div class="color-info"><strong>#C6CED1</strong> (Darkened Light Gray-Blue)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #95A7BC;"></div>
+                <div class="color-info"><strong>#95A7BC</strong> (Darkened Medium Gray-Blue)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #5C7E8B;"></div>
+                <div class="color-info"><strong>#5C7E8B</strong> (Darkened Dusty Teal)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #2C4D54;"></div>
+                <div class="color-info"><strong>#2C4D54</strong> (Darkened Deep Slate-Teal)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #B59A81;"></div>
+                <div class="color-info"><strong>#B59A81</strong> (Darkened Soft Tan Accent)</div>
+            </div>
+        </div>
+        <div class="palette-strip">
+            <div class="strip-color" style="background-color: #F8F8F8;"></div>
+            <div class="strip-color" style="background-color: #E0E7EB;"></div>
+            <div class="strip-color" style="background-color: #B3C5CE;"></div>
+            <div class="strip-color" style="background-color: #7A9CA9;"></div>
+            <div class="strip-color" style="background-color: #4A6B72;"></div>
+            <div class="strip-color" style="background-color: #D3B89F;"></div>
+        </div>
+    </div>
+
+    <div class="palette-section">
+        <h2 class="palette-title">Earthen Whisper</h2>
+        <h3 class="section-subtitle">Original Tones</h3>
+        <div class="color-list">
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #FAFAF7;"></div>
+                <div class="color-info"><strong>#FAFAF7</strong> (Creamy White Background)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #F0EAD6;"></div>
+                <div class="color-info"><strong>#F0EAD6</strong> (Pale Gold/Beige)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #D4CBB6;"></div>
+                <div class="color-info"><strong>#D4CBB6</strong> (Warm Stone)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #A2998A;"></div>
+                <div class="color-info"><strong>#A2998A</strong> (Muted Olive)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #6B6358;"></div>
+                <div class="color-info"><strong>#6B6358</strong> (Deep Earth Brown)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #A8B5A7;"></div>
+                <div class="color-info"><strong>#A8B5A7</strong> (Soft Sage Accent)</div>
+            </div>
+        </div>
+        <h3 class="section-subtitle">Darkened Tones</h3>
+        <div class="color-list">
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #DCDCDC;"></div>
+                <div class="color-info"><strong>#DCDCDC</strong> (Darkened Creamy White)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #D2BC9C;"></div>
+                <div class="color-info"><strong>#D2BC9C</strong> (Darkened Pale Gold/Beige)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #B6A798;"></div>
+                <div class="color-info"><strong>#B6A798</strong> (Darkened Warm Stone)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #847B6C;"></div>
+                <div class="color-info"><strong>#847B6C</strong> (Darkened Muted Olive)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #4D413A;"></div>
+                <div class="color-info"><strong>#4D413A</strong> (Darkened Deep Earth Brown)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #8A9789;"></div>
+                <div class="color-info"><strong>#8A9789</strong> (Darkened Soft Sage Accent)</div>
+            </div>
+        </div>
+        <div class="palette-strip">
+            <div class="strip-color" style="background-color: #FAFAF7;"></div>
+            <div class="strip-color" style="background-color: #F0EAD6;"></div>
+            <div class="strip-color" style="background-color: #D4CBB6;"></div>
+            <div class="strip-color" style="background-color: #A2998A;"></div>
+            <div class="strip-color" style="background-color: #6B6358;"></div>
+            <div class="strip-color" style="background-color: #A8B5A7;"></div>
+        </div>
+    </div>
+
+    <div class="palette-section">
+        <h2 class="palette-title">Misty Morning</h2>
+        <h3 class="section-subtitle">Original Tones</h3>
+        <div class="color-list">
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #F5F7F9;"></div>
+                <div class="color-info"><strong>#F5F7F9</strong> (Cool Off-White Background)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #DDE2E7;"></div>
+                <div class="color-info"><strong>#DDE2E7</strong> (Light Cool Gray)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #AAB2BD;"></div>
+                <div class="color-info"><strong>#AAB2BD</strong> (Slate Gray)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #7C8D9E;"></div>
+                <div class="color-info"><strong>#7C8D9E</strong> (Medium Blue-Gray)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #526B7E;"></div>
+                <div class="color-info"><strong>#526B7E</strong> (Deep Indigo-Gray)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #BACDCD;"></div>
+                <div class="color-info"><strong>#BACDCD</strong> (Muted Cyan Accent)</div>
+            </div>
+        </div>
+        <h3 class="section-subtitle">Darkened Tones</h3>
+        <div class="color-list">
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #D7D9DB;"></div>
+                <div class="color-info"><strong>#D7D9DB</strong> (Darkened Cool Off-White)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #BFCAE3;"></div>
+                <div class="color-info"><strong>#BFCAE3</strong> (Darkened Light Cool Gray)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #8C949F;"></div>
+                <div class="color-info"><strong>#8C949F</strong> (Darkened Slate Gray)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #5E6F80;"></div>
+                <div class="color-info"><strong>#5E6F80</strong> (Darkened Medium Blue-Gray)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #344D60;"></div>
+                <div class="color-info"><strong>#344D60</strong> (Darkened Deep Indigo-Gray)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #9EB1B1;"></div>
+                <div class="color-info"><strong>#9EB1B1</strong> (Darkened Muted Cyan Accent)</div>
+            </div>
+        </div>
+        <div class="palette-strip">
+            <div class="strip-color" style="background-color: #F5F7F9;"></div>
+            <div class="strip-color" style="background-color: #DDE2E7;"></div>
+            <div class="strip-color" style="background-color: #AAB2BD;"></div>
+            <div class="strip-color" style="background-color: #7C8D9E;"></div>
+            <div class="strip-color" style="background-color: #526B7E;"></div>
+            <div class="strip-color" style="background-color: #BACDCD;"></div>
+        </div>
+    </div>
+
+    <div class="palette-section">
+        <h2 class="palette-title">Desert Bloom</h2>
+        <h3 class="section-subtitle">Original Tones</h3>
+        <div class="color-list">
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #FFFDFB;"></div>
+                <div class="color-info"><strong>#FFFDFB</strong> (Warm White Background)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #F5F0EB;"></div>
+                <div class="color-info"><strong>#F5F0EB</strong> (Pale Peach)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #E7D8CD;"></div>
+                <div class="color-info"><strong>#E7D8CD</strong> (Rosy Beige)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #CBA495;"></div>
+                <div class="color-info"><strong>#CBA495</strong> (Terracotta)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #98756A;"></div>
+                <div class="color-info"><strong>#98756A</strong> (Burnt Sienna)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #D8C28F;"></div>
+                <div class="color-info"><strong>#D8C28F</strong> (Soft Gold Accent)</div>
+            </div>
+        </div>
+        <h3 class="section-subtitle">Darkened Tones</h3>
+        <div class="color-list">
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #E7E5E3;"></div>
+                <div class="color-info"><strong>#E7E5E3</strong> (Darkened Warm White)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #D7D2CD;"></div>
+                <div class="color-info"><strong>#D7D2CD</strong> (Darkened Pale Peach)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #C9BAAF;"></div>
+                <div class="color-info"><strong>#C9BAAF</strong> (Darkened Rosy Beige)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #AD8677;"></div>
+                <div class="color-info"><strong>#AD8677</strong> (Darkened Terracotta)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #7A574C;"></div>
+                <div class="color-info"><strong>#7A574C</strong> (Darkened Burnt Sienna)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #BAA471;"></div>
+                <div class="color-info"><strong>#BAA471</strong> (Darkened Soft Gold Accent)</div>
+            </div>
+        </div>
+        <div class="palette-strip">
+            <div class="strip-color" style="background-color: #FFFDFB;"></div>
+            <div class="strip-color" style="background-color: #F5F0EB;"></div>
+            <div class="strip-color" style="background-color: #E7D8CD;"></div>
+            <div class="strip-color" style="background-color: #CBA495;"></div>
+            <div class="strip-color" style="background-color: #98756A;"></div>
+            <div class="strip-color" style="background-color: #D8C28F;"></div>
+        </div>
+    </div>
+
+    <div class="palette-section">
+        <h2 class="palette-title">Forest Path</h2>
+        <h3 class="section-subtitle">Original Tones</h3>
+        <div class="color-list">
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #F9FCF8;"></div>
+                <div class="color-info"><strong>#F9FCF8</strong> (Very Light Greenish-White Background)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #E3EAE0;"></div>
+                <div class="color-info"><strong>#E3EAE0</strong> (Pale Mint)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #C1D5BF;"></div>
+                <div class="color-info"><strong>#C1D5BF</strong> (Soft Green)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #89A98A;"></div>
+                <div class="color-info"><strong>#89A98A</strong> (Dusky Green)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #587C5E;"></div>
+                <div class="color-info"><strong>#587C5E</strong> (Deep Forest Green)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #EDE0C8;"></div>
+                <div class="color-info"><strong>#EDE0C8</strong> (Cream Accent)</div>
+            </div>
+        </div>
+        <h3 class="section-subtitle">Darkened Tones</h3>
+        <div class="color-list">
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #DEDFE0;"></div>
+                <div class="color-info"><strong>#DEDFE0</strong> (Darkened Greenish-White)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #C5CCB2;"></div>
+                <div class="color-info"><strong>#C5CCB2</strong> (Darkened Pale Mint)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #A3B7A1;"></div>
+                <div class="color-info"><strong>#A3B7A1</strong> (Darkened Soft Green)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #6B8B6C;"></div>
+                <div class="color-info"><strong>#6B8B6C</strong> (Darkened Dusky Green)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #3A5E40;"></div>
+                <div class="color-info"><strong>#3A5E40</strong> (Darkened Deep Forest Green)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #CFB9AC;"></div>
+                <div class="color-info"><strong>#CFB9AC</strong> (Darkened Cream Accent)</div>
+            </div>
+        </div>
+        <div class="palette-strip">
+            <div class="strip-color" style="background-color: #F9FCF8;"></div>
+            <div class="strip-color" style="background-color: #E3EAE0;"></div>
+            <div class="strip-color" style="background-color: #C1D5BF;"></div>
+            <div class="strip-color" style="background-color: #89A98A;"></div>
+            <div class="strip-color" style="background-color: #587C5E;"></div>
+            <div class="strip-color" style="background-color: #EDE0C8;"></div>
+        </div>
+    </div>
+
+    <div class="palette-section">
+        <h2 class="palette-title">Coastal Breeze</h2>
+        <h3 class="section-subtitle">Original Tones</h3>
+        <div class="color-list">
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #F6FCFD;"></div>
+                <div class="color-info"><strong>#F6FCFD</strong> (Light Aqua-White Background)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #E5F2F5;"></div>
+                <div class="color-info"><strong>#E5F2F5</strong> (Very Light Blue)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #C9E4E9;"></div>
+                <div class="color-info"><strong>#C9E4E9</strong> (Powder Blue)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #9DCED9;"></div>
+                <div class="color-info"><strong>#9DCED9</strong> (Soft Sky Blue)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #6FA8B4;"></div>
+                <div class="color-info"><strong>#6FA8B4</strong> (Deep Ocean Blue)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #F0D8B4;"></div>
+                <div class="color-info"><strong>#F0D8B4</strong> (Sandy Beige Accent)</div>
+            </div>
+        </div>
+        <h3 class="section-subtitle">Darkened Tones</h3>
+        <div class="color-list">
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #D8DEE1;"></div>
+                <div class="color-info"><strong>#D8DEE1</strong> (Darkened Light Aqua-White)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #C7D4D7;"></div>
+                <div class="color-info"><strong>#C7D4D7</strong> (Darkened Very Light Blue)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #ABC6CB;"></div>
+                <div class="color-info"><strong>#ABC6CB</strong> (Darkened Powder Blue)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #7FACC1;"></div>
+                <div class="color-info"><strong>#7FACC1</strong> (Darkened Soft Sky Blue)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #518A96;"></div>
+                <div class="color-info"><strong>#518A96</strong> (Darkened Deep Ocean Blue)</div>
+            </div>
+            <div class="color-item">
+                <div class="color-swatch" style="background-color: #D2BA96;"></div>
+                <div class="color-info"><strong>#D2BA96</strong> (Darkened Sandy Beige Accent)</div>
+            </div>
+        </div>
+        <div class="palette-strip">
+            <div class="strip-color" style="background-color: #F6FCFD;"></div>
+            <div class="strip-color" style="background-color: #E5F2F5;"></div>
+            <div class="strip-color" style="background-color: #C9E4E9;"></div>
+            <div class="strip-color" style="background-color: #9DCED9;"></div>
+            <div class="strip-color" style="background-color: #6FA8B4;"></div>
+            <div class="strip-color" style="background-color: #F0D8B4;"></div>
+        </div>
+    </div>
+
+</body>
+</html>
