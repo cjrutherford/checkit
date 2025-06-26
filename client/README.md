@@ -1,59 +1,64 @@
-# Client
+# Checkit Angular Client
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.2.
+This is the frontend application for Checkit, built with Angular. It provides a user interface for authentication, profile management (including profile picture upload), and checklist operations, communicating with the NestJS backend API.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- User authentication (login, registration)
+- User profile management (view, update, upload profile picture)
+- Checklist templates and runs
+- Responsive UI
 
-```bash
-ng serve
-```
+## Prerequisites
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- **Node.js:** Version 16 or higher
+- **npm** or **yarn**
+- **Angular CLI:**
+    ```bash
+    npm install -g @angular/cli
+    ```
 
-## Code scaffolding
+## Installation
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+1. **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-```bash
-ng generate component component-name
-```
+2. **Environment configuration:**
+    - Copy `src/environments/environment.example.ts` to `src/environments/environment.ts` and update the API URL if needed.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Running the Application
 
 ```bash
-ng test
+npm start
 ```
+The app will be available at http://localhost:4200
 
-## Running end-to-end tests
+## Testing
 
-For end-to-end (e2e) testing, run:
+- **Unit tests:**
+    ```bash
+    npm run test
+    ```
+- **End-to-end tests:**
+    ```bash
+    npm run e2e
+    ```
 
-```bash
-ng e2e
-```
+## Debugging
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- Use Chrome DevTools or VS Code's Angular debugging tools.
+- Source maps are enabled by default in development mode.
 
-## Additional Resources
+## Project Structure
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- `src/app/` — Main application code (components, pages, services, types)
+- `src/public/` — Static assets
+
+## Support
+
+- [Angular Documentation](https://angular.io/docs)
+
+---
+MIT License

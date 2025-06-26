@@ -31,10 +31,16 @@ export class UsersService {
             throw new Error(`User profile not found for user ID: ${userId}`);
         }
         const profileAsset = await this.assetService.readAsset(profile.profilePictureUrl!);
+        console.log("🚀 ~ UsersService ~ getUserProfile ~ profileAsset:", profileAsset)
         if (!profileAsset) {
             throw new Error(`Profile picture not found for user ID: ${userId}`);
         }
-        const base64ProfilePicture = profileAsset.toString('base64');
+        // Assume PNG for profile pictures; adjust MIME type if needed
+        let base64ProfilePicture = `${profileAsset.toString('base64')}`;
+        
+        base64ProfilePicture = base64ProfilePicture.replace(/^dataimage\/pngbase64,?/i, '');
+        base64ProfilePicture = `data:image/png;base64,${base64ProfilePicture}`;
+        console.log("🚀 ~ UsersService ~ getUserProfile ~ base64ProfilePicture:", base64ProfilePicture.slice(0, 40))
         return {
             ...profile,
             profilePictureUrl: base64ProfilePicture,

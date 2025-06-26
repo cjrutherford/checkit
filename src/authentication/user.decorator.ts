@@ -38,7 +38,7 @@ const User = createParamDecorator(
  */
 const parseToken = (token: string) => {
     // Assuming the token is a JWT token
-    const payload = Buffer.from(token.split('.')[1], 'base64').toString('utf-8');
+    const payload = atob(token.split('.')[1]);
     return JSON.parse(payload);
 };
 

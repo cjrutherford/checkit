@@ -1,3 +1,9 @@
+/**
+ * Templates page component: manages checklist templates.
+ * - Fetches and displays templates
+ * - Allows editing, creating, and selecting templates
+ */
+
 import { CheckListTemplateDto, CreateChecklistTemplateDto } from '../../types';
 import { Component, effect, signal } from '@angular/core';
 

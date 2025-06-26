@@ -1,3 +1,9 @@
+/**
+ * Profile page component: displays and allows editing of the user's profile.
+ * - Loads user profile data
+ * - Supports editing username, bio, and profile photo
+ */
+
 import { Component, signal } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -18,7 +24,7 @@ export class Profile {
   }
 
   username = signal('johndoe');
-  profilePhotoUrl = signal('https://via.placeholder.com/120');
+  profilePhotoUrl = signal('https://placehold.co/120');
   bio = signal('This is a short bio about John Doe.');
 
   isEditing = signal(false);
@@ -31,8 +37,20 @@ export class Profile {
       if (profile) {
         this.username.set(profile.name ?? 'johndoe');
         this.bio.set(profile.bio ?? 'This is a short bio about John Doe.');
-        console.log("🚀 ~ Profile ~ loadProfile ~ profile:", profile)
-        this.profilePhotoUrl.set(profile.profilePictureUrl ?? 'https://via.placeholder.com/120');
+        let setProfile = profile.profilePictureUrl ?? 'https://placehold.co/120x120';
+
+        // If it's a data URL, use as-is
+        if (setProfile.startsWith('data:')) {
+          // do nothing, use as-is
+        }
+        // If it's a relative path (starts with /), prepend your API host
+        else if (setProfile.startsWith('/')) {
+          setProfile = `https://your-api-host.com${setProfile}`;
+        }
+        // Otherwise, use as-is (absolute URL, etc.)
+
+        this.profilePhotoUrl.set(setProfile);
+
         // Keep edited fields in sync if not editing
         if (!this.isEditing()) {
           this.editedUsername.set(this.username());
@@ -56,8 +74,22 @@ export class Profile {
       bio: this.editedBio(),
       profilePictureUrl: this.editedProfilePhotoUrl()
     };
-    // Post the profile using the users service
-    await firstValueFrom(this.users.createUser(createProfileDto));
+
+    // Determine if this is a new profile or an update
+    // If username and bio are both still the defaults, assume new profile
+    const isNewProfile =
+      this.username() === 'johndoe' &&
+      this.bio() === 'This is a short bio about John Doe.';
+
+    if (isNewProfile) {
+      // Create new profile
+      await firstValueFrom(this.users.createUser(createProfileDto));
+    } else {
+      // Update existing profile
+      await firstValueFrom(this.users.updateUser(createProfileDto));
+    }
+
+    // Update local state and exit edit mode
     this.username.set(this.editedUsername());
     this.bio.set(this.editedBio());
     this.profilePhotoUrl.set(this.editedProfilePhotoUrl());

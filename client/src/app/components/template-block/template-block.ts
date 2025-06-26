@@ -2,6 +2,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { CheckListTemplateDto } from '../../types';
 
+/**
+ * TemplateBlock component: displays a checklist template block with edit/delete actions.
+ * - Emits events for editing and deleting templates
+ * - Handles template selection for duplication
+ */
 @Component({
   selector: 'app-template-block',
   imports: [],
