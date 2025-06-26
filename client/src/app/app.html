@@ -4,15 +4,15 @@
   <router-outlet />
   
   <div class="theme-picker-bubble">
-    <button class="mode-toggle" (click)="toggleThemeMode()" [attr.aria-label]="themeMode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'">
-      <span *ngIf="themeMode === 'light'" class="icon">☀️</span>
-      <span *ngIf="themeMode === 'dark'" class="icon">🌙</span>
+    <button class="mode-toggle" (click)="toggleThemeMode()" [attr.aria-label]="themeMode() === 'light' ? 'Switch to dark mode' : 'Switch to light mode'">
+      <span *ngIf="themeMode() === 'light'" class="icon">☀️</span>
+      <span *ngIf="themeMode() === 'dark'" class="icon">🌙</span>
     </button>
     <select class="theme-select" [(ngModel)]="selectedTheme" (ngModelChange)="setTheme($event)">
       <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.name }}</option>
     </select>
     <div class="palette-preview">
-      <span *ngFor="let swatch of currentPalette" class="swatch" [style.background]="swatch.code" [title]="swatch.description"></span>
+      <span *ngFor="let swatch of currentPalette()" class="swatch" [style.background]="swatch.code" [title]="swatch.description"></span>
     </div>
   </div>
 </div>

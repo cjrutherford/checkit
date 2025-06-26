@@ -1,8 +1,6 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { signal, computed, Injectable } from '@angular/core';
 import { CheckListTemplateDto, RunDto } from '../types';
-
-import { Injectable } from '@angular/core';
-import { Template } from './template.service';
+import { HttpClient } from '@angular/common/http';
 
 export interface Run {
   name: string;
@@ -21,10 +19,16 @@ export interface RunState {
   providedIn: 'root'
 })
 export class RunService {
-  private runsSubject = new BehaviorSubject<RunDto[]>([]);
+  private baseUrl = '/api/checklist-run/'
+  constructor(private readonly http: HttpClient) {}
+  private runsSignal = signal<RunDto[]>([]);
 
-  getRuns(): Observable<RunDto[]> {
-    return this.runsSubject.asObservable();
+  get runs() {
+    return this.runsSignal();
+  }
+
+  getRuns(){
+    return this.http.get<RunDto[]>(this.baseUrl)
   }
 
   addRunFromTemplate(template: CheckListTemplateDto): void {
@@ -36,19 +40,19 @@ export class RunService {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    const currentRuns = this.runsSubject.value;
-    this.runsSubject.next([...currentRuns, run]);
+    const currentRuns = this.runsSignal();
+    this.runsSignal.set([...currentRuns, run]);
   }
 
   updateRun(index: number, run: RunDto): void {
-    const currentRuns = [...this.runsSubject.value];
+    const currentRuns = [...this.runsSignal()];
     currentRuns[index] = run;
-    this.runsSubject.next(currentRuns);
+    this.runsSignal.set(currentRuns);
   }
 
   deleteRun(index: number): void {
-    const currentRuns = [...this.runsSubject.value];
+    const currentRuns = [...this.runsSignal()];
     currentRuns.splice(index, 1);
-    this.runsSubject.next(currentRuns);
+    this.runsSignal.set(currentRuns);
   }
 }

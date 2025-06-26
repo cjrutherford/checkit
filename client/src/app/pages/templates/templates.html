@@ -8,7 +8,7 @@
         <h2>Start a new Checklist</h2>
         <button class="new-button" (click)="openNewTemplateModal()">➕ Create Template</button>
     </div>
-    <ng-container *ngFor="let template of templates; let i = index">
+    <ng-container *ngFor="let template of templates(); let i = index">
         <app-template-block [template]="template" (onEdit)="openEditTemplateModal(i)" (onDelete)="deleteTemplate(i)"></app-template-block>
     </ng-container>
 </div>

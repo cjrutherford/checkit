@@ -1,5 +1,5 @@
 import { CheckListTemplateDto, CreateChecklistTemplateDto } from '../../types';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit, signal } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 
 import { ChecklistTemplateService } from '../../services';
@@ -13,8 +13,8 @@ import { TemplateEdit } from '../../components/template-edit/template-edit';
   templateUrl: './templates.html',
   styleUrl: './templates.scss'
 })
-export class Templates implements OnInit, OnDestroy {
-  templates: CheckListTemplateDto[] = [];
+export class Templates {
+  templates = signal<CheckListTemplateDto[]>([]);
   showModal = false;
   selectedTemplate: CheckListTemplateDto = {
     id: '',
@@ -26,27 +26,18 @@ export class Templates implements OnInit, OnDestroy {
     checklistRuns: []
   };
   editIndex: number | null = null;
-  destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private templateService: ChecklistTemplateService) {}
+  constructor(private templateService: ChecklistTemplateService) {
+    effect(() => {
+      this.templateService.getTemplates().subscribe({
+        next: (templates: CheckListTemplateDto[]) => {
 
-  ngOnInit(): void {
-    this.loadTemplates();
-  }
-
-ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  loadTemplates(): void {
-    this.templateService.getTemplates().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (templates: CheckListTemplateDto[]) => {
-        this.templates = templates.map(t => {
-          t.tasks = t.tasks.map(task => task.description)
-          return t;
-        });
-      },
+          this.templates.set(templates.map(t => {
+            t.tasks = t.tasks.map(task => task.description)
+            return t;
+          }));
+        },
+      });
     });
   }
 
@@ -57,7 +48,7 @@ ngOnDestroy(): void {
   }
 
   openEditTemplateModal(index: number): void {
-    this.selectedTemplate = { ...this.templates[index] };
+    this.selectedTemplate = this.templates()[index];
     this.editIndex = index;
     this.showModal = true;
   }
@@ -73,9 +64,11 @@ ngOnDestroy(): void {
       this.templateService.updateTemplate(template.id, template).subscribe({
         next: (updatedTemplate: CheckListTemplateDto) => {
           if (this.editIndex !== null) {
-            this.templates[this.editIndex] = updatedTemplate;
+            const currentTemplates = this.templates();
+            currentTemplates[this.editIndex] = updatedTemplate;
+            this.templates.set(currentTemplates);
           } else {
-            this.templates.push(updatedTemplate);
+            this.templates.set([...this.templates(), updatedTemplate]);
           }
         },
         error: (err) => {
@@ -85,13 +78,11 @@ ngOnDestroy(): void {
     } else {
       this.templateService.createTemplate(template).subscribe({
         next: (newTemplate: CheckListTemplateDto) => {
-          this.templates.push(newTemplate);
-          this.loadTemplates();
+          this.templates.set([...this.templates(), newTemplate]);
           this.closeModal();
         },
         error: (err) => {
           console.error('Error creating template:', err);
-          this.loadTemplates();
           this.closeModal();
         }
       });
@@ -99,12 +90,14 @@ ngOnDestroy(): void {
   }
 
   deleteTemplate(index: number): void {
-    this.templateService.deleteTemplate(this.templates[index].id).subscribe({
-      next: () => {
-        this.templates.splice(index, 1)
-        this.closeModal();
-      },
+    effect(() => {
+      this.templateService.deleteTemplate(this.templates()[index].id).subscribe({
+        next: () => {
+          const originalTemplates = this.templates();
+          this.templates.set(originalTemplates.filter((_, i) => i !== index));
+          this.closeModal();
+        },
+      });
     });
-    this.loadTemplates();
   }
 }

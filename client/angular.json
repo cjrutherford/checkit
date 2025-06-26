@@ -26,6 +26,7 @@
                 "input": "public"
               }
             ],
+            "sourceMap": true,
             "styles": [
               "src/styles.scss"
             ]

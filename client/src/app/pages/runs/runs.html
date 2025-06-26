@@ -18,11 +18,11 @@
   <button (click)="createRun()">➕ Create Run</button>
 </div>
 
-@if (runs.length === 0) {
+@if (runs().length === 0) {
 <p class="card-container">No active runs found.</p>
 }
-<div *ngIf="runs.length > 0" class="grid-list">
-  @for (run of runs; track $index) {
+<div *ngIf="runs().length > 0" class="grid-list">
+  @for (run of runs(); track $index) {
   <app-run-block [run]="run" (view)="selectViewRun($event)"></app-run-block>
   }
 </div>

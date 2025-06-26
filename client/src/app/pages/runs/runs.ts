@@ -2,7 +2,7 @@ import { Run, RunService } from '../../services/run.service';
 import { Subject, takeUntil } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, effect, signal } from '@angular/core';
 import { CreateRun } from '../../components/create-run/create-run';
 import { RunBlock } from '../../components/run-block/run-block';
 import { RunDto } from '../../types';
@@ -15,26 +15,15 @@ import { ViewRun } from '../../components/view-run/view-run';
   styleUrl: './runs.scss'
 })
 export class Runs {
-  runs: RunDto[] = [];
   showCreateRun = false;
   showViewRun = false;
   selectedRun?: any;
-  destroy$: Subject<void> = new Subject<void>();
+  runs = signal<RunDto[]>([])
 
-  constructor(private readonly runService: RunService) {}
-
-  ngOnInit() {
-    this.runService.getRuns()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((runs: RunDto[]) => {
-        this.runs = runs
-        console.log('Runs loaded:', this.runs);
-      });
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+  constructor(private readonly runService: RunService) {
+    effect(() => {
+      this.runService.getRuns().subscribe(runs => this.runs.set(runs))
+    })
   }
 
   createRun() {
@@ -66,3 +55,4 @@ export class Runs {
     console.log(`Deleting run with ID: ${id}`);
   }
 }
+

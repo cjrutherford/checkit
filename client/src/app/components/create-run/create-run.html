@@ -4,7 +4,7 @@
         <p>Start a new checklist run by selecting a template and filling in the required details.</p>
     </div>
     <div class="content-grid">
-        @for (temp of templates; track $index) {
+        @for (temp of templates(); track $index) {
             <div class="content-card" (click)="selectTemplate(temp)">
                 <h2>{{ temp.title }}</h2>
                 <p>{{ temp.description }}</p>

@@ -8,8 +8,7 @@ export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<any>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<any>> => {
-  const authService = inject(AuthService);
-  const token = authService.getAuthToken();
+  const token = localStorage.getItem('authToken')
   if (token) {
     const cloned = req.clone({
       setHeaders: { Authorization: `Bearer ${token}` }

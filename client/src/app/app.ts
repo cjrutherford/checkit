@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed, effect } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,12 +22,12 @@ export declare type ThemeType = {
   templateUrl: './app.html',
   styleUrl: './app.scss',
   host: {
-    '[style.--background]': 'background',
-    '[style.--primary]': 'primary',
-    '[style.--secondary]': 'secondary',
-    '[style.--accent]': 'accent',
-    '[style.--text]': 'text',
-    '[style.--highlight]': 'highlight',
+    '[style.--background]': 'background()',
+    '[style.--primary]': 'primary()',
+    '[style.--secondary]': 'secondary()',
+    '[style.--accent]': 'accent()',
+    '[style.--text]': 'text()',
+    '[style.--highlight]': 'highlight()',
   },
 })
 export class App {
@@ -147,67 +147,74 @@ export class App {
       ]
     }
   ];
-  selectedTheme: ThemeType = this.themes[0];
-  themeMode: 'light' | 'dark' = 'light';
-  background: string = '';
-  primary: string = '';
-  secondary: string = '';
-  accent: string = '';
-  text: string = '';
-  highlight: string = '';
 
-  get currentPalette(): ColorSwatch[] {
-    return this.selectedTheme[this.themeMode];
+  // Signals for theme state
+  selectedTheme = signal<ThemeType>(this.themes[0]);
+  themeMode = signal<'light' | 'dark'>('light');
+
+  // Computed signal for current palette
+  currentPalette = computed(() => this.selectedTheme()[this.themeMode()]);
+
+  // Signals for color variables
+  background = signal('');
+  primary = signal('');
+  secondary = signal('');
+  accent = signal('');
+  text = signal('');
+  highlight = signal('');
+
+  constructor() {
+    this.loadThemeSettings();
+    // Effect to apply theme whenever selectedTheme or themeMode changes
+    effect(() => {
+      this.applyTheme();
+    });
   }
 
   setTheme($event: ThemeType) {
-    const theme = $event;
-    this.selectedTheme = theme;
-    this.applyTheme();
+    this.selectedTheme.set($event);
     this.saveThemeSettings();
   }
 
   toggleThemeMode() {
-    this.themeMode = this.themeMode === 'light' ? 'dark' : 'light';
-    this.applyTheme();
+    this.themeMode.set(this.themeMode() === 'light' ? 'dark' : 'light');
     this.saveThemeSettings();
   }
 
   applyTheme() {
-    // Apply CSS variables for the current palette
-    const palette = this.currentPalette;
+    const palette = this.currentPalette();
     const [background, primary, secondary, accent, text, highlight] = palette.map(swatch => swatch.code);
-    this.background = background;
-    this.primary = primary;
-    this.secondary = secondary;
-    this.accent = accent;
-    this.text = text;
-    this.highlight = highlight;
+    this.background.set(background);
+    this.primary.set(primary);
+    this.secondary.set(secondary);
+    this.accent.set(accent);
+    this.text.set(text);
+    this.highlight.set(highlight);
 
-    document.documentElement.setAttribute('data-theme-mode', this.themeMode);
+    document.documentElement.setAttribute('data-theme-mode', this.themeMode());
   }
 
   saveThemeSettings() {
-    localStorage.setItem('themeMode', this.themeMode);
-    localStorage.setItem('themeName', this.selectedTheme.name);
+    localStorage.setItem('themeMode', this.themeMode());
+    localStorage.setItem('themeName', this.selectedTheme().name);
   }
 
   loadThemeSettings() {
     const storedMode = localStorage.getItem('themeMode') as 'light' | 'dark' | null;
     const storedName = localStorage.getItem('themeName');
     if (storedMode && (storedMode === 'light' || storedMode === 'dark')) {
-      this.themeMode = storedMode;
+      this.themeMode.set(storedMode);
     }
     if (storedName) {
       const found = this.themes.find(t => t.name === storedName);
       if (found) {
-        this.selectedTheme = found;
+        this.selectedTheme.set(found);
       }
     }
   }
 
-  ngOnInit() {
-    this.loadThemeSettings();
-    this.applyTheme();
-  }
+  // ngOnInit() {
+  //     this.loadThemeSettings();
+  //     this.applyTheme();
+  // }
 }
