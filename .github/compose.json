@@ -1,0 +1,25 @@
+{
+    "name": "Build and Start Docker Compose Stack",
+    "description": "Builds and starts the Docker Compose stack, ensuring all services start without errors.",
+    "runs": {
+        "using": "composite",
+        "steps": [
+            {
+                "name": "Set up Docker Buildx",
+                "uses": "docker/setup-buildx-action@v3"
+            },
+            {
+                "name": "Build Docker Compose Stack",
+                "run": "docker-compose build"
+            },
+            {
+                "name": "Start Docker Compose Stack",
+                "run": "docker-compose up -d"
+            },
+            {
+                "name": "Check Docker Compose Services Health",
+                "run": "docker-compose ps && docker-compose logs --tail=50"
+            }
+        ]
+    }
+}
