@@ -1,17 +1,22 @@
+import { NextFunction, Request, Response } from 'express';
+
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { Response } from 'express';
 import { join } from 'path';
 
 export function setupStatic(app: NestExpressApplication) {
-  app.useStaticAssets(join(__dirname, '..', '..', 'client', 'dist', 'client', 'browser'));
-  app.setBaseViewsDir(join(__dirname, '..', '..', 'client', 'dist', 'client', 'browser'));
-  // Serve index.html for the root path
-  app.getHttpAdapter().get('/', (req, res: Response) => {
-    res.sendFile(join(__dirname, '..', '..', 'client', 'dist', 'client', 'browser', 'index.html'));
-  });
+  const publicDir = join(__dirname, '..', '..', 'public', 'browser');
+  app.useStaticAssets(publicDir);
+  app.setBaseViewsDir(publicDir);
 
-  // Redirect all other paths to root
-  // app.getHttpAdapter().get('*', (req, res: Response) => {
-  //   res.redirect('/');
-  // });
+  // Serve index.html for all non-API, non-static asset routes (deep linking support)
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (req.url.startsWith('/api')) {
+      return next(); // Let API routes be handled by backend
+    }
+    // If the request matches a static file, let express.static handle it
+    if (req.method === 'GET' && req.accepts('html')) {
+      return res.sendFile(join(publicDir, 'index.html'));
+    }
+    next();
+  });
 }

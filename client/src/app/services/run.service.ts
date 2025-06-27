@@ -38,7 +38,7 @@ export class RunService {
       title: template.title + ` - Run ${new Date().toLocaleDateString()}`,
       description: template.description,
       status: 'pending',
-      checkLisTemplateId: template.id,
+      checklistTemplateId: template.id,
     };
     return this.checklistRunService.createChecklistRun(run)
   }

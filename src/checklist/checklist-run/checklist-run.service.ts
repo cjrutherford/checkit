@@ -27,14 +27,14 @@ export class ChecklistRunService {
      * @throws Error if template not found or checklist run creation fails
      */
     async create(createChecklistRunDto: CreateChecklistRunDto, userId: string): Promise<ChecklistRun> {
+        const {title, description, checklistTemplateId } = createChecklistRunDto; // Destructure to avoid unused variable warning
         const template = await this.checklistTemplateRepo.findOne({
-            where: { id: createChecklistRunDto.checklistTemplateId },
+            where: { id: checklistTemplateId },
             relations: ['tasks']
         });
         if (!template) {
-            throw new Error(`Checklist template with id ${createChecklistRunDto.checklistTemplateId} not found`);
+            throw new Error(`Checklist template with id ${checklistTemplateId} not found`);
         }
-        const {title, description } = createChecklistRunDto; // Destructure to avoid unused variable warning
         const checklistRun = this.checklistRunRepo.create({ title, description, status: ChecklistRunStatus.PENDING, userId, checklistTemplate: template });
         const checklist = await this.checklistRunRepo.save(checklistRun);
         if (template.tasks && template.tasks.length > 0) {

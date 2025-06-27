@@ -28,6 +28,8 @@ export declare type ThemeType = {
     '[style.--accent]': 'accent()',
     '[style.--text]': 'text()',
     '[style.--highlight]': 'highlight()',
+    '[style.--bg-gradient]': 'bgGradient()',
+    '[style.--shadow-gradient]': 'shadowGradient()',
   },
 })
 export class App {
@@ -350,6 +352,9 @@ export class App {
   accent = signal('');
   text = signal('');
   highlight = signal('');
+  bgGradient = signal('');
+  shadowGradient = signal('');
+
 
   constructor() {
     this.loadThemeSettings();
@@ -378,7 +383,8 @@ export class App {
     this.accent.set(accent);
     this.text.set(text);
     this.highlight.set(highlight);
-
+    this.bgGradient.set(`linear-gradient(135deg, ${primary} 0%, ${accent} 20%, ${secondary} 40%, ${highlight} 60%, ${background} 80%, ${background} 100%)`);
+    this.shadowGradient.set(`linear-gradient(95deg, ${primary} 0%, ${accent} 20%, ${secondary} 40%, ${highlight} 60%, ${background} 80%, ${background} 100%)`);
     document.documentElement.setAttribute('data-theme-mode', this.themeMode());
   }
 

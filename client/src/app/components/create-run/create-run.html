@@ -10,7 +10,7 @@
                 <p>{{ temp.description }}</p>
                 @for (t of temp.tasks; track $index) {
                     <div class="task-item">
-                        <span class="task-name">{{$index + 1}} : {{ t }}</span>
+                        <span class="task-name">{{$index + 1}} : {{ t.description }}</span>
                     </div>
                 }
             </div>

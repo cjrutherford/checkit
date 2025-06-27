@@ -24,7 +24,7 @@ export interface UpdateRunDto{
 }
 
 export interface CreateRunDto {
-    checkLisTemplateId: string; // Reference id of CheckListTemplateDto
+    checklistTemplateId: string; // Reference id of CheckListTemplateDto
     title: string; // Title of the run
     description?: string; // Optional field for run description
     status: RunStatus; // Status of the run (e.g., 'pending', 'in_progress', 'completed', 'cancelled')
