@@ -20,7 +20,7 @@ Checkit is a TypeScript application built with NestJS for managing user profiles
 
 1. **Clone the Repository:**
     ```bash
-    git clone [repository URL - replace with the actual URL]
+    git clone git@github.com:cjrutherford/checkit.git
     cd checkit
     ```
 

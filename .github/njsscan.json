@@ -1,0 +1,38 @@
+{
+    "name": "Run njsscan",
+    "on": ["push", "pull_request"],
+    "jobs": {
+        "njsscan": {
+            "runs-on": "ubuntu-latest",
+            "steps": [
+                {
+                    "name": "Checkout code",
+                    "uses": "actions/checkout@v4"
+                },
+                {
+                    "name": "Set up Python",
+                    "uses": "actions/setup-python@v5",
+                    "with": {
+                        "python-version": "3.x"
+                    }
+                },
+                {
+                    "name": "Install njsscan",
+                    "run": "pip install njsscan"
+                },
+                {
+                    "name": "Run njsscan",
+                    "run": "njsscan . --output njsscan-report.json --format json"
+                },
+                {
+                    "name": "Upload njsscan report",
+                    "uses": "actions/upload-artifact@v4",
+                    "with": {
+                        "name": "njsscan-report",
+                        "path": "njsscan-report.json"
+                    }
+                }
+            ]
+        }
+    }
+}

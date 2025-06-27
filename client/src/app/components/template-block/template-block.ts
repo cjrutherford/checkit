@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { CheckListTemplateDto } from '../../types';
+import { Router } from '@angular/router';
 import { RunService } from '../../services/run.service';
 
 /**
@@ -23,7 +24,7 @@ export class TemplateBlock {
   @Output() onEdit = new EventEmitter<CheckListTemplateDto>();
   @Output() onDelete = new EventEmitter<CheckListTemplateDto>();
 
-  constructor(private readonly runService: RunService) {}
+  constructor(private readonly runService: RunService, private readonly router: Router) {}
 
   editTemplate(template: CheckListTemplateDto): void {
     this.onEdit.emit(template);
@@ -33,10 +34,13 @@ export class TemplateBlock {
     this.onDelete.emit(template);
   }
 
-  useTemplate(template: any): void {
-    this.runService.addRunFromTemplate(template).subscribe({
+  useTemplate(template: CheckListTemplateDto): void {
+    // Deep clone the template to avoid mutation issues
+    const templateCopy = JSON.parse(JSON.stringify(template));
+    this.runService.addRunFromTemplate(templateCopy).subscribe({
       next: (run) => {
         console.log('Template used for new run:', run);
+        this.router.navigate(['/runs']);
       },
       error: (err) => {
         console.error('Error using template:', err);
