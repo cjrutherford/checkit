@@ -34,7 +34,7 @@ export class TemplateBlock {
     this.onDelete.emit(template);
   }
 
-  useTemplate(template: any): void {
+  useTemplate(template: CheckListTemplateDto): void {
     // Deep clone the template to avoid mutation issues
     const templateCopy = JSON.parse(JSON.stringify(template));
     this.runService.addRunFromTemplate(templateCopy).subscribe({
