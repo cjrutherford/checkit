@@ -14,7 +14,7 @@ export function setupStatic(app: NestExpressApplication) {
       return next(); // Let API routes be handled by backend
     }
     // If the request matches a static file, let express.static handle it
-    if (req.method === 'GET' && req.accepts('html')) {
+    if (req.method === 'GET' && req.accepts('html') && !path.extname(req.url)) {
       return res.sendFile(join(publicDir, 'index.html'));
     }
     next();
