@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Install backend dependencies
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm install 
 
 # Copy backend source
 COPY . .
@@ -19,7 +19,7 @@ RUN npm install
 RUN npm run build -- --output-path=dist
 
 # Production image
-FROM node:20-slim as prod
+FROM node:20-slim AS prod
 WORKDIR /app
 
 # Copy backend build
