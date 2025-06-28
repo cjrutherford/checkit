@@ -1,17 +1,19 @@
+import { Component, effect, signal } from '@angular/core';
+
+import { CommonModule } from '@angular/common';
+import { CreateRun } from '../../components/create-run/create-run';
+import { MessageService } from './../../services/message';
+import { RunBlock } from '../../components/run-block/run-block';
+import { RunDto } from '../../types';
+import { RunService } from '../../services/run.service';
+import { ViewRun } from '../../components/view-run/view-run';
 /**
  * Runs page component: displays and manages user checklist runs.
  * - Fetches runs from the backend
  * - Allows creating and viewing runs
  */
 
-import { Component, effect, signal } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
-import { CreateRun } from '../../components/create-run/create-run';
-import { RunBlock } from '../../components/run-block/run-block';
-import { RunDto } from '../../types';
-import { RunService } from '../../services/run.service';
-import { ViewRun } from '../../components/view-run/view-run';
 
 @Component({
   selector: 'app-runs',
@@ -25,9 +27,18 @@ export class Runs {
   selectedRun?: any;
   runs = signal<RunDto[]>([])
 
-  constructor(private readonly runService: RunService) {
+  constructor(private readonly runService: RunService, private readonly messageService: MessageService) {
     effect(() => {
-      this.runService.getRuns().subscribe(runs => this.runs.set(runs))
+      this.runService.getRuns().subscribe({
+        next: runs => this.runs.set(runs),
+        error: (err) => {
+          console.error('Error fetching runs:', err);
+          this.messageService.addMessage({
+            content: 'Failed to load runs. Please try again later.' + err,
+            type: 'error'
+          });
+        }
+      })
     })
   }
 
@@ -71,6 +82,10 @@ export class Runs {
       },
       error: (error: any) => {
         console.error(`Error deleting run with ID: ${index}`, error);
+        this.messageService.addMessage({
+          content: 'Failed to delete run. Please try again later.' + error,
+          type: 'error'
+        });
       }
     });
   }

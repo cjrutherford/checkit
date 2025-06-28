@@ -3,6 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { MessageService } from '../../services/message';
 
 @Component({
   selector: 'app-auth',
@@ -19,7 +20,7 @@ export class AuthPage {
   resetData = { oldPassword: '', newPassword: '', confirmNewPassword: '', email: '' };
   error: string = '';
 
-  constructor(private readonly auth: AuthService, private readonly router: Router) {}
+  constructor(private readonly auth: AuthService, private readonly router: Router, private readonly messageService: MessageService) {}
 
   switchMode(mode: 'login' | 'register' | 'reset') {
     this.mode = mode;
@@ -30,9 +31,16 @@ export class AuthPage {
     this.auth.login(this.loginData).subscribe({
       next: () => {
         this.isLoggedIn.set(true);
+        this.messageService.addMessage({
+          content: 'Login successful!',
+          type: 'success'
+        });
         this.router.navigate(['/']);
       },
-      error: err => this.error = err.error?.message ?? 'Login failed.'
+      error: err => this.messageService.addMessage({
+        content: `${err.error?.message}:${err.error?.error ?? 'Login failed.'}`,
+        type: 'error'
+      })
     });
   }
 
@@ -42,15 +50,37 @@ export class AuthPage {
       return;
     }
     this.auth.register(this.registerData).subscribe({
-      next: () => this.switchMode('login'),
-      error: err => this.error = err.error?.message ?? 'Registration failed.'
+      next: () => {
+        this.messageService.addMessage({
+          content: 'Registration successful! Please log in.',
+          type: 'success'
+        });
+        this.switchMode('login');
+      },
+      error: err => {
+        this.messageService.addMessage({
+          content: `${err.error?.message}:${err.error?.error ?? 'Registration failed.'}`,
+          type: 'error'
+        });
+      }
     });
   }
 
   reset() {
     this.auth.resetPassword(this.resetData).subscribe({
-      next: () => this.switchMode('login'),
-      error: err => this.error = err.error?.message ?? 'Reset failed.'
+      next: () => {
+        this.messageService.addMessage({
+          content: 'Password reset successful! Please log in.',
+          type: 'success'
+        });
+        this.switchMode('login')
+      },
+      error: err => {
+        this.messageService.addMessage({
+          content: err.error?.message ?? 'Password reset failed.',
+          type: 'error'
+        });
+      }
     });
   }
 

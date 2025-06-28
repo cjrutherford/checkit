@@ -1,12 +1,20 @@
 <div class="title-container">
     <div class="title-heading">
-        <h1 class="title-text">Checkit!</h1>
+        <h1 class="title-text"><img src="assets/checkit.png" alt="check it logo">Checkit!</h1>
     </div>
     <div class="spacer"></div>
+    <div class="hamburger">
+        <button class="hamburger-button" (click)="toggleSidebar()">
+            <span class="icon">☰</span>
+        </button>
+    </div>
+</div>
+<div *ngIf="showSideBar()" class="sidebar">
     <div class="routing">
         <a class="routing-link" routerLink="/templates" routerLinkActive="active">Checklist Templates</a>
         <a class="routing-link" routerLink="/runs" routerLinkActive="active">Checklist Runs</a>
         <a class="routing-link" routerLink="/profile" routerLinkActive="active">Profile</a>
-        <a class="routing-link" routerLink="/auth" routerLinkActive="active">Login/Register</a>
+        <a class="routing-link" routerLink="/auth" routerLinkActive="active">{{ isLoggedIn() ? 'Logout' : 'Login/Register' }}</a>
     </div>
+    <button (click)="toggleSidebar()">Close</button>
 </div>

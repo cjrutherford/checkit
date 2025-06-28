@@ -155,3 +155,11 @@ button, .new-button {
 .btn-primary { background-color: var(--primary); color: var(--text); }
 .btn-secondary { background-color: var(--secondary); color: var(--text); }
 .btn-accent { background-color: var(--accent); color: var(--text); }
+
+.sidebar {
+  // ...existing code...
+  @extend .fade-in;
+  @extend .slide-up;
+  @include animations.smooth-transition(all, 0.4s, cubic-bezier(0.4,0,0.2,1));
+}
+

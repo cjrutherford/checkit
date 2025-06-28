@@ -9,17 +9,27 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CreateUserProfileDto } from '../../types';
 import { FormsModule } from '@angular/forms';
+import { MessageService } from '../../services/message';
 import { UsersService } from '../../services';
 import { firstValueFrom } from 'rxjs';
+
+export declare type ProfileType = {
+  name: string;
+  bio: string;
+  profilePictureUrl: string;
+}
 
 @Component({
   selector: 'app-profile',
   imports: [CommonModule, FormsModule],
   templateUrl: './profile.html',
-  styleUrl: './profile.scss'
+  styleUrl: './profile.scss',
 })
 export class Profile {
-  constructor(private readonly users: UsersService) {
+  constructor(
+    private readonly users: UsersService,
+    private readonly messageService: MessageService,
+  ) {
     this.loadProfile();
   }
 
@@ -33,32 +43,41 @@ export class Profile {
   editedProfilePhotoUrl = signal(this.profilePhotoUrl());
 
   loadProfile() {
-    this.users.getUsers().subscribe(profile => {
-      if (profile) {
-        this.username.set(profile.name ?? 'johndoe');
-        this.bio.set(profile.bio ?? 'This is a short bio about John Doe.');
-        let setProfile = profile.profilePictureUrl ?? 'https://placehold.co/120x120';
+    this.users.getUsers().subscribe({
+      next: (profile: ProfileType) => {
+        if (profile) {
+          this.username.set(profile.name ?? 'johndoe');
+          this.bio.set(profile.bio ?? 'This is a short bio about John Doe.');
+          let setProfile = profile.profilePictureUrl ?? 'https://placehold.co/120x120';
 
-        // If it's a data URL, use as-is
-        if (setProfile.startsWith('data:')) {
-          // do nothing, use as-is
-        }
-        // If it's a relative path (starts with /), prepend your API host
-        else if (setProfile.startsWith('/')) {
-          setProfile = `https://your-api-host.com${setProfile}`;
-        }
-        // Otherwise, use as-is (absolute URL, etc.)
+          // If it's a data URL, use as-is
+          if (setProfile.startsWith('data:')) {
+            // do nothing, use as-is
+          }
+          // If it's a relative path (starts with /), prepend your API host
+          else if (setProfile.startsWith('/')) {
+            setProfile = `https://your-api-host.com${setProfile}`;
+          }
+          // Otherwise, use as-is (absolute URL, etc.)
 
-        this.profilePhotoUrl.set(setProfile);
+          this.profilePhotoUrl.set(setProfile);
 
-        // Keep edited fields in sync if not editing
-        if (!this.isEditing()) {
-          this.editedUsername.set(this.username());
-          this.editedBio.set(this.bio());
-          this.editedProfilePhotoUrl.set(this.profilePhotoUrl());
+          // Keep edited fields in sync if not editing
+          if (!this.isEditing()) {
+            this.editedUsername.set(this.username());
+            this.editedBio.set(this.bio());
+            this.editedProfilePhotoUrl.set(this.profilePhotoUrl());
+          }
         }
-      }
-    });
+      },
+      error: (err: any) => {
+        console.error('Error loading profile:', err);
+        this.messageService.addMessage({
+          content: 'Failed to load profile. Please try again later.' + err,
+          type: 'error',
+        });
+      },
+    })
   }
 
   onEdit() {
@@ -72,7 +91,7 @@ export class Profile {
     const createProfileDto: CreateUserProfileDto = {
       name: this.editedUsername(),
       bio: this.editedBio(),
-      profilePictureUrl: this.editedProfilePhotoUrl()
+      profilePictureUrl: this.editedProfilePhotoUrl(),
     };
 
     // Determine if this is a new profile or an update
@@ -83,10 +102,28 @@ export class Profile {
 
     if (isNewProfile) {
       // Create new profile
-      await firstValueFrom(this.users.createUser(createProfileDto));
+      await firstValueFrom(this.users.createUser(createProfileDto))
+        .catch((err: any) => {
+          console.error('Error creating profile:', err)
+          this.messageService.addMessage({
+            content: 'Failed to create profile. Please try again later.' + err,
+            type: 'error',
+          });
+      });
     } else {
       // Update existing profile
-      await firstValueFrom(this.users.updateUser(createProfileDto));
+      await firstValueFrom(this.users.updateUser(createProfileDto))
+        .catch((err: any) => {
+          console.error('Error updating profile:', err);
+          this.messageService.addMessage({
+            content: 'Failed to update profile. Please try again later.' + err,
+            type: 'error',
+          });
+        });
+      this.messageService.addMessage({
+        content: 'Profile updated successfully!',
+        type: 'success',
+      });
     }
 
     // Update local state and exit edit mode
