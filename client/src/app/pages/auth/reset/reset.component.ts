@@ -2,6 +2,7 @@ import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MessageService } from '../../../services/message';
 
 @Component({
   selector: 'app-reset',
@@ -15,7 +16,7 @@ export class ResetComponent {
   error: string = '';
   success: string = '';
 
-  constructor(private readonly auth: AuthService) {}
+  constructor(private readonly auth: AuthService, private readonly messageService: MessageService) {}
 
   reset() {
     if (this.resetData.newPassword !== this.resetData.confirmNewPassword) {
@@ -27,7 +28,10 @@ export class ResetComponent {
         this.success = 'Password reset successful!';
         this.error = '';
       },
-      error: err => this.error = err.error?.message ?? 'Reset failed.'
+      error: err => this.messageService.addMessage({
+        content: `${err.error?.message}:${err.error?.error ?? 'Reset failed.'}`,
+        type: 'error'
+      })
     });
   }
 }

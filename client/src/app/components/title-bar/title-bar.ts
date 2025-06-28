@@ -1,5 +1,8 @@
+import { Component, signal } from '@angular/core';
+import { from, of } from 'rxjs';
+
+import { AuthService } from '../../services';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 /**
@@ -12,5 +15,15 @@ import { RouterModule } from '@angular/router';
   styleUrl: './title-bar.scss'
 })
 export class TitleBar {
+  constructor(private readonly authService: AuthService) {
+    of(this.authService.isLoggedIn()).subscribe(isLoggedIn => {
+      this.isLoggedIn.set(isLoggedIn);
+    });
+  }
+  showSideBar = signal(false);
+  isLoggedIn = signal(false);
 
+  toggleSidebar() {
+    this.showSideBar.update(value => !value);
+  }
 }

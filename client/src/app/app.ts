@@ -2,6 +2,7 @@ import { Component, computed, effect, signal } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MessageService } from './services/message';
 import { RouterOutlet } from '@angular/router';
 import { TitleBar } from './components/title-bar/title-bar';
 
@@ -14,6 +15,11 @@ export declare type ThemeType = {
   name: string,
   light: ColorSwatch[]
   dark: ColorSwatch[]
+}
+
+export declare type MessageType = {
+  content: string;
+  type: 'info' | 'error' | 'success';
 }
 
 @Component({
@@ -33,6 +39,9 @@ export declare type ThemeType = {
   },
 })
 export class App {
+  showThemePicker = signal(false);
+  messages = signal<MessageType[]>([
+  ]);
   themes: ThemeType[] = [ {
       name: "Sunny Day",
       light: [
@@ -150,20 +159,20 @@ export class App {
       {
     name: "Azure Horizon",
     light: [
-      { code: "#FFFFFF", description: "Background White" }, // Base for content
-      { code: "#3F51B5", description: "Primary Blue" }, // Main branding/interactive elements
-      { code: "#C5CAE9", description: "Secondary Light Blue" }, // Supporting elements, subtle variations
-      { code: "#00BCD4", description: "Accent Cyan" }, // Calls to action, interactive highlights
-      { code: "#212121", description: "Dark Text" }, // Main body text
-      { code: "#757575", description: "Highlight Medium Gray" }, // Subtle highlights, disabled text, icons
+      { code: "#FFFFFF", description: "Background White" }, 
+      { code: "#3F51B5", description: "Primary Blue" }, 
+      { code: "#C5CAE9", description: "Secondary Light Blue" },
+      { code: "#00BCD4", description: "Accent Cyan" }, 
+      { code: "#212121", description: "Dark Text" }, 
+      { code: "#757575", description: "Highlight Medium Gray" }, 
     ],
     dark: [
-      { code: "#121212", description: "Dark Gray Background" }, // Base for content
-      { code: "#7986CB", description: "Primary Blue" }, // Main branding/interactive elements (lighter for dark mode)
-      { code: "#303F9F", description: "Secondary Dark Blue" }, // Supporting elements, subtle depth
-      { code: "#4DD0E1", description: "Accent Cyan" }, // Calls to action, interactive highlights (lighter for dark mode)
-      { code: "#E0E0E0", description: "Light Text" }, // Main body text
-      { code: "#B0B0B0", description: "Highlight Medium Light Gray" }, // Subtle highlights, disabled text, icons
+      { code: "#121212", description: "Dark Gray Background" }, 
+      { code: "#7986CB", description: "Primary Blue" }, 
+      { code: "#303F9F", description: "Secondary Dark Blue" }, 
+      { code: "#4DD0E1", description: "Accent Cyan" }, 
+      { code: "#E0E0E0", description: "Light Text" }, 
+      { code: "#B0B0B0", description: "Highlight Medium Light Gray" }, 
     ],
   },
   {
@@ -355,12 +364,23 @@ export class App {
   bgGradient = signal('');
   shadowGradient = signal('');
 
+  toggleThemePicker() {
+    this.showThemePicker.set(!this.showThemePicker());
+  }
 
-  constructor() {
+  removeMessage(index: number) {
+    console.log("Removing message at index:", index);
+    this.messageService.dismiss(index);
+  }
+  
+  constructor(private readonly messageService: MessageService) {
     this.loadThemeSettings();
     // Effect to apply theme whenever selectedTheme or themeMode changes
     effect(() => {
       this.applyTheme();
+      this.messageService.messages$().subscribe(messages => {
+        this.messages.set(messages);
+      });
     });
   }
 
@@ -407,8 +427,4 @@ export class App {
     }
   }
 
-  // ngOnInit() {
-  //     this.loadThemeSettings();
-  //     this.applyTheme();
-  // }
 }

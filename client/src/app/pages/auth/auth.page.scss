@@ -40,8 +40,8 @@
 }
 .tab-link.active, .tab-link[routerLinkActive].active {
   border-bottom: 3px solid var(--primary, #333);
-  color: var(--primary, #333);
-  background: var(--highlight, #F0F0F0);
+  color: var(--highlight, #333);
+  background: var(--secondary, #F0F0F0);
 }
 .tab-link:hover {
   color: var(--primary, #333);
