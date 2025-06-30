@@ -7,6 +7,7 @@ import { RunBlock } from '../../components/run-block/run-block';
 import { RunDto } from '../../types';
 import { RunService } from '../../services/run.service';
 import { ViewRun } from '../../components/view-run/view-run';
+
 /**
  * Runs page component: displays and manages user checklist runs.
  * - Fetches runs from the backend
@@ -69,6 +70,13 @@ export class Runs {
   editRun(id: string) {
     // Logic to edit a run by its ID
     console.log(`Editing run with ID: ${id}`);
+  }
+
+  updateRun(run: RunDto) {
+    // Logic to update a run by its ID
+    const currentRuns = this.runs();
+    const updatedRuns = currentRuns.map(r => r.id === run.id ? run : r);
+    this.runs.set(updatedRuns);
   }
 
   deleteRun(run: RunDto, index: number) {

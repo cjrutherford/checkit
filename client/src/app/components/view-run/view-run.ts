@@ -51,6 +51,7 @@ export class ViewRun {
   };
 
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
+  @Output() runUpdated: EventEmitter<RunDto> = new EventEmitter<RunDto>();
 
   taskForm: FormGroup;
 
@@ -163,6 +164,7 @@ export class ViewRun {
               this.run.completedAt = null;
             });
         }
+        this.runUpdated.emit(this.run);
         this.updateStepAndDisable(); // <-- Update enabled/disabled state after toggle
       });
   }

@@ -28,6 +28,7 @@ services:
     ports:
       - '3000:3000'
     volumes:
+      - /opt/assets:/assets
       - ./client/src/assets:/app/client/dist/assets
 
 volumes:
