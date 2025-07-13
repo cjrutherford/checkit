@@ -1,6 +1,7 @@
 import { Component, effect, signal } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { CreateAdhocRun } from '../../components/create-adhoc-run/create-adhoc-run';
 import { CreateRun } from '../../components/create-run/create-run';
 import { MessageService } from './../../services/message';
 import { RunBlock } from '../../components/run-block/run-block';
@@ -18,12 +19,13 @@ import { ViewRun } from '../../components/view-run/view-run';
 
 @Component({
   selector: 'app-runs',
-  imports: [CommonModule, CreateRun, ViewRun, RunBlock],
+  imports: [CommonModule, CreateRun, ViewRun, RunBlock, CreateAdhocRun],
   templateUrl: './runs.html',
   styleUrl: './runs.scss'
 })
 export class Runs {
   showCreateRun = false;
+  showCreateAdhocRun = false;
   showViewRun = false;
   selectedRun?: any;
   runs = signal<RunDto[]>([])
@@ -47,6 +49,10 @@ export class Runs {
     this.showCreateRun = true;
   }
 
+  createAdhocRun() {
+    this.showCreateAdhocRun = true;
+  }
+
   viewrun() {
     this.showViewRun = true;
   }
@@ -65,6 +71,7 @@ export class Runs {
   closeModals() {
     this.showCreateRun = false;
     this.showViewRun = false;
+    this.showCreateAdhocRun = false;
   }
 
   editRun(id: string) {

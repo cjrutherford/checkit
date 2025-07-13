@@ -24,8 +24,8 @@ export default class ChecklistRun {
     @Column({ type: 'enum', enum: ChecklistRunStatus, default: ChecklistRunStatus.PENDING })
     status: ChecklistRunStatus;
 
-    @ManyToOne(() => ChecklistTemplate, checklistTemplate => checklistTemplate.checklistRuns)
-    checklistTemplate: ChecklistTemplate;
+    @ManyToOne(() => ChecklistTemplate, checklistTemplate => checklistTemplate.checklistRuns, { nullable: true })
+    checklistTemplate?: ChecklistTemplate;
 
     @Column()
     userId: string;

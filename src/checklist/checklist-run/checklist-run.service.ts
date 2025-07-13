@@ -7,6 +7,7 @@ import { ChecklistRun, ChecklistTemplate, RunTask } from '../../database/entitie
 import { Repository } from 'typeorm';
 import CreateChecklistRunDto from '../dto/create-checklist-run.dto';
 import { ChecklistRunStatus } from 'src/database/entities/checklist-run.entity';
+import CreateAdhocChecklistRunDto from '../dto/create-adhoc-checklist-run.dto';
 
 @Injectable()
 export class ChecklistRunService {
@@ -18,6 +19,36 @@ export class ChecklistRunService {
         @Inject(getRepositoryToken(ChecklistTemplate)) private readonly checklistTemplateRepo: Repository<ChecklistTemplate>,
         @Inject(getRepositoryToken(RunTask)) private readonly runTaskRepo: Repository<RunTask>
     ) { }
+
+    /**
+     * Creates a new ad-hoc checklist run for a user.
+     * @param createAdhocChecklistRunDto The ad-hoc checklist run data
+     * @param userId The user's ID
+     * @returns The created checklist run
+     */
+    async createAdhoc(createAdhocChecklistRunDto: CreateAdhocChecklistRunDto, userId: string): Promise<ChecklistRun> {
+        const { title, description, tasks } = createAdhocChecklistRunDto;
+        const checklistRun = this.checklistRunRepo.create({
+            title,
+            description,
+            status: ChecklistRunStatus.PENDING,
+            userId,
+        });
+        const savedChecklistRun = await this.checklistRunRepo.save(checklistRun);
+
+        if (tasks && tasks.length > 0) {
+            const taskEntities = tasks.map(taskDescription => {
+                const runTask = this.runTaskRepo.create({
+                    description: taskDescription,
+                    checklistRun: savedChecklistRun,
+                });
+                return this.runTaskRepo.save(runTask);
+            });
+            savedChecklistRun.tasks = await Promise.all(taskEntities);
+        }
+
+        return savedChecklistRun;
+    }
 
     /**
      * Creates a new checklist run for a user from a template.
@@ -88,3 +119,4 @@ export class ChecklistRunService {
         await this.checklistRunRepo.remove(run);
     }
 }
+""

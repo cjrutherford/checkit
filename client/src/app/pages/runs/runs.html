@@ -15,7 +15,8 @@
       new run.
     </p>
   </div>
-  <button (click)="createRun()">➕ Create Run</button>
+  <button (click)="createRun()">➕ Create Run From Template</button>
+  <button (click)="createAdhocRun()">➕ Create Ad-hoc Run</button>
 </div>
 
 @if (runs().length === 0) {
@@ -28,4 +29,5 @@
 </div>
 
 <app-create-run class="modal" (close)="closeModals()" (runCreated)="addCreatedRun($event)" *ngIf="showCreateRun"></app-create-run>
+<app-create-adhoc-run class="modal" (close)="closeModals()" (runCreated)="addCreatedRun($event)" *ngIf="showCreateAdhocRun"></app-create-adhoc-run>
 <app-view-run class="modal"(close)="closeModals()" [run]="selectedRun" (runUpdated)="updateRun($event)" *ngIf="showViewRun"></app-view-run>

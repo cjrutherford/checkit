@@ -32,6 +32,10 @@ export class RunService {
     return this.checklistRunService.getChecklistRuns()
   }
 
+  addAdhocRun(run: Partial<RunDto>): Observable<any> {
+    return this.checklistRunService.createAdhocChecklistRun(run);
+  }
+
   addRunFromTemplate(template: CheckListTemplateDto): Observable<any> {
     const run: CreateRunDto = {
       ...template,

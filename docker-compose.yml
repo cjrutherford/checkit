@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   db:
     image: postgres:15
@@ -7,6 +6,11 @@ services:
       POSTGRES_DB: checkit
       POSTGRES_USER: checkit
       POSTGRES_PASSWORD: checkit
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U checkit"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - '5432:5432'
     volumes:
@@ -17,7 +21,8 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       DB_HOST: db
       DB_PORT: 5432

@@ -9,6 +9,7 @@ import User, { UserType } from '../../authentication/user.decorator';
 import CreateChecklistRunDto from '../dto/create-checklist-run.dto';
 import UpdateChecklistRunDto from '../dto/update-checklist-run.dto';
 import { AuthGuard } from '../../authentication/auth/auth.guard';
+import CreateAdhocChecklistRunDto from '../dto/create-adhoc-checklist-run.dto';
 
 @UseGuards(AuthGuard)
 @Controller('checklist-run')
@@ -17,6 +18,17 @@ export class ChecklistRunController {
      * Injects the ChecklistRunService for checklist run logic.
      */
     constructor(private readonly checklistRunService: ChecklistRunService) {}
+
+    /**
+     * Creates a new ad-hoc checklist run for the authenticated user.
+     * @param user The authenticated user
+     * @param createAdhocChecklistRunDto The ad-hoc checklist run data
+     * @returns The created checklist run
+     */
+    @Post('ad-hoc')
+    async createAdhocChecklistRun(@User() user: UserType, @Body() createAdhocChecklistRunDto: CreateAdhocChecklistRunDto) {
+        return this.checklistRunService.createAdhoc(createAdhocChecklistRunDto, user.userId);
+    }
 
     /**
      * Creates a new checklist run for the authenticated user.

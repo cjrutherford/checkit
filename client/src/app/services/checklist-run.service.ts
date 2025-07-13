@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UpdateRunDto } from '../types';
+import { RunDto, UpdateRunDto } from '../types';
 
 @Injectable({ providedIn: 'root' })
 export class ChecklistRunService {
@@ -22,6 +22,10 @@ export class ChecklistRunService {
 
   createChecklistRun(data: any): Observable<any> {
     return this.http.post(this.baseUrl, data);
+  }
+
+  createAdhocChecklistRun(data: Partial<RunDto>): Observable<any> {
+    return this.http.post(`${this.baseUrl}/ad-hoc`, data);
   }
 
   deleteChecklistRun(id: string): Observable<any> {
